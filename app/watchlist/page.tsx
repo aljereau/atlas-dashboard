@@ -74,7 +74,7 @@ export default function WatchlistPage() {
           className={`px-4 py-2 font-medium text-sm ${
             activeTab === 'properties'
               ? 'border-b-2 border-blue-500 text-blue-600'
-              : 'text-gray-700 hover:text-gray-900'
+              : 'text-gray-500 hover:text-gray-700'
           }`}
           onClick={() => setActiveTab('properties')}
         >
@@ -84,7 +84,7 @@ export default function WatchlistPage() {
           className={`px-4 py-2 font-medium text-sm ${
             activeTab === 'notes'
               ? 'border-b-2 border-blue-500 text-blue-600'
-              : 'text-gray-700 hover:text-gray-900'
+              : 'text-gray-500 hover:text-gray-700'
           }`}
           onClick={() => setActiveTab('notes')}
         >
@@ -107,7 +107,7 @@ export default function WatchlistPage() {
           ) : (
             <div className="text-center py-12 bg-white rounded-lg shadow">
               <h3 className="text-lg font-medium text-gray-900 mb-2">Your watchlist is empty</h3>
-              <p className="text-gray-700 mb-6">Start adding properties to track your interests.</p>
+              <p className="text-gray-500 mb-6">Start adding properties to track your interests.</p>
               <Button 
                 variant="primary"
                 onClick={() => router.push('/explore')}
@@ -126,7 +126,7 @@ export default function WatchlistPage() {
               <div key={property.id} className="bg-white rounded-lg shadow overflow-hidden">
                 <div className="p-4 border-b border-gray-200">
                   <h2 className="text-lg font-semibold">{property.name}</h2>
-                  <p className="text-sm text-gray-700">{property.location}</p>
+                  <p className="text-sm text-gray-600">{property.location}</p>
                 </div>
                 <div className="p-4">
                   <textarea
@@ -137,7 +137,7 @@ export default function WatchlistPage() {
                     onChange={(e) => handleNoteChange(property.id, e.target.value)}
                   />
                   <div className="flex justify-between items-center text-sm">
-                    <span className="text-gray-700">
+                    <span className="text-gray-500">
                       {notes[property.id] ? 'Last edited: just now' : 'No notes yet'}
                     </span>
                     <Button 
@@ -154,7 +154,7 @@ export default function WatchlistPage() {
           ) : (
             <div className="text-center py-12 bg-white rounded-lg shadow">
               <h3 className="text-lg font-medium text-gray-900 mb-2">No notes yet</h3>
-              <p className="text-gray-700 mb-4">Add properties to your watchlist to take notes.</p>
+              <p className="text-gray-500 mb-4">Add properties to your watchlist to take notes.</p>
               <Button 
                 variant="primary"
                 onClick={() => router.push('/explore')}

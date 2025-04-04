@@ -65,7 +65,7 @@ export default function Sidebar() {
         {/* Logo/branding */}
         <div className="p-6 border-b border-gray-800">
           <h1 className="text-2xl font-bold">Atlas</h1>
-          <p className="text-sm text-gray-300">Real Estate Dashboard</p>
+          <p className="text-sm text-gray-400">Real Estate Dashboard</p>
         </div>
 
         {/* Navigation items */}
@@ -82,7 +82,7 @@ export default function Sidebar() {
                       flex items-center p-3 rounded-md transition-colors duration-200
                       ${isActive 
                         ? 'bg-blue-600 text-white' 
-                        : 'text-gray-200 hover:bg-gray-800 hover:text-white'}
+                        : 'text-gray-300 hover:bg-gray-800 hover:text-white'}
                     `}
                   >
                     <span className="mr-3">{item.icon}</span>
@@ -103,7 +103,7 @@ export default function Sidebar() {
             <div className="w-8 h-8 rounded-full bg-gray-700 mr-3"></div>
             <div>
               <p className="text-sm font-medium">Demo User</p>
-              <p className="text-xs text-gray-300">Investor Account</p>
+              <p className="text-xs text-gray-400">Investor Account</p>
             </div>
           </div>
         </div>

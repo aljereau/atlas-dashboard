@@ -61,7 +61,7 @@ export default function FilterBar({
   return (
     <div className="bg-white shadow rounded-lg p-4 mb-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0 sm:space-x-4">
-        <div className="font-medium text-gray-800">Filters</div>
+        <div className="font-medium text-gray-700">Filters</div>
         
         {/* Location filter */}
         <div className="relative">
@@ -119,7 +119,7 @@ export default function FilterBar({
           <span className="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800">
             Location: {filters.location}
             <button 
-              className="ml-1 text-blue-600 hover:text-blue-800"
+              className="ml-1 text-blue-500 hover:text-blue-700"
               onClick={() => handleFilterChange('location', 'All Locations')}
             >
               ×
