@@ -1,23 +1,49 @@
 'use client';
 
-import { useState } from 'react';
-import FilterBar from '@/components/ui/FilterBar';
+import { useState, useEffect } from 'react';
+import FilterBar, { Filters } from '@/components/ui/FilterBar';
 import PropertyCard from '@/components/ui/PropertyCard';
 import Modal from '@/components/ui/Modal';
 import ChartComponent from '@/components/ui/ChartComponent';
+import Button from '@/components/ui/Button';
+import PropertyImage from '@/components/ui/PropertyImage';
 import { Property, properties } from '@/data/mock/properties';
+import { filterProperties } from '@/utils/filterProperties';
+import { toggleWatchlist, isInWatchlist } from '@/utils/localStorage';
 
 export default function ExplorePage() {
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [filteredProperties, setFilteredProperties] = useState<Property[]>(properties);
+  const [currentFilters, setCurrentFilters] = useState<Filters>({
+    location: 'All Locations',
+    score: 'all',
+    yield: 'all'
+  });
+  const [investmentAmount, setInvestmentAmount] = useState<number>(10000);
+  const [isWatchlisted, setIsWatchlisted] = useState(false);
 
+  // Apply filters when they change
+  useEffect(() => {
+    const result = filterProperties(properties, currentFilters);
+    setFilteredProperties(result);
+  }, [currentFilters]);
+
+  // Handle property card click
   const handlePropertyClick = (property: Property) => {
     setSelectedProperty(property);
+    setIsWatchlisted(isInWatchlist(property.id));
     setIsModalOpen(true);
   };
 
+  // Close modal
   const closeModal = () => {
     setIsModalOpen(false);
+  };
+
+  // Handle filter changes
+  const handleFilterChange = (filters: Filters) => {
+    setCurrentFilters(filters);
   };
 
   // Format price to currency format
@@ -29,23 +55,57 @@ export default function ExplorePage() {
     }).format(price);
   };
 
+  // Calculate ownership percentage and token count
+  const calculateOwnership = (property: Property | null, amount: number) => {
+    if (!property) return { percentage: 0, tokens: 0 };
+    
+    const percentage = (amount / property.price) * 100;
+    const tokens = Math.floor(amount / (property.price / 1000)); // Assuming 1 token = 1/1000 of property value
+    
+    return { percentage, tokens };
+  };
+
+  // Handle watchlist toggle in the modal
+  const handleWatchlistToggle = () => {
+    if (selectedProperty) {
+      const newStatus = toggleWatchlist(selectedProperty.id);
+      setIsWatchlisted(newStatus);
+    }
+  };
+
+  // Calculate ownership details for selected property
+  const ownershipDetails = calculateOwnership(selectedProperty, investmentAmount);
+
   return (
     <div>
       <h1 className="text-2xl font-bold mb-6">Explore Properties</h1>
       
       {/* Filter bar */}
-      <FilterBar />
+      <FilterBar onFilterChange={handleFilterChange} />
       
-      {/* Property grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {properties.map((property) => (
-          <PropertyCard
-            key={property.id}
-            property={property}
-            onClick={() => handlePropertyClick(property)}
-          />
-        ))}
-      </div>
+      {filteredProperties.length === 0 ? (
+        <div className="bg-white rounded-lg shadow p-8 text-center">
+          <h3 className="text-lg font-medium text-gray-900 mb-2">No properties match your filters</h3>
+          <p className="text-gray-500 mb-4">Try adjusting your filters to see more properties.</p>
+          <Button 
+            variant="primary" 
+            onClick={() => setCurrentFilters({ location: 'All Locations', score: 'all', yield: 'all' })}
+          >
+            Reset Filters
+          </Button>
+        </div>
+      ) : (
+        /* Property grid */
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {filteredProperties.map((property) => (
+            <PropertyCard
+              key={property.id}
+              property={property}
+              onClick={() => handlePropertyClick(property)}
+            />
+          ))}
+        </div>
+      )}
 
       {/* Property detail modal */}
       {selectedProperty && (
@@ -58,8 +118,14 @@ export default function ExplorePage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Left panel */}
             <div>
-              {/* Property image placeholder */}
-              <div className="h-48 bg-gray-300 rounded-md mb-4"></div>
+              {/* Property image */}
+              <div className="h-48 rounded-md overflow-hidden mb-4">
+                <PropertyImage 
+                  id={selectedProperty.id} 
+                  name={selectedProperty.name} 
+                  height={192}
+                />
+              </div>
               
               <div className="mb-4">
                 <p className="text-gray-600">{selectedProperty.location}</p>
@@ -101,6 +167,11 @@ export default function ExplorePage() {
                   </div>
                 </div>
               </div>
+
+              <div className="mb-4">
+                <h3 className="font-semibold mb-2">Property Description</h3>
+                <p className="text-gray-600">{selectedProperty.description}</p>
+              </div>
             </div>
             
             {/* Right panel */}
@@ -114,18 +185,19 @@ export default function ExplorePage() {
                       type="number" 
                       className="w-full border border-gray-300 rounded-md px-3 py-2"
                       placeholder="Enter amount"
-                      defaultValue="10000"
+                      value={investmentAmount}
+                      onChange={(e) => setInvestmentAmount(Number(e.target.value))}
                     />
                   </div>
                   
                   <div className="mb-4">
                     <div className="flex justify-between text-sm mb-1">
                       <span>Ownership</span>
-                      <span className="font-semibold">0.83%</span>
+                      <span className="font-semibold">{ownershipDetails.percentage.toFixed(2)}%</span>
                     </div>
                     <div className="flex justify-between text-sm">
                       <span>Token Count</span>
-                      <span className="font-semibold">32 tokens</span>
+                      <span className="font-semibold">{ownershipDetails.tokens} tokens</span>
                     </div>
                   </div>
                 </div>
@@ -148,12 +220,19 @@ export default function ExplorePage() {
               </div>
               
               <div className="flex space-x-2">
-                <button className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition-colors">
+                <Button 
+                  variant="primary"
+                  fullWidth
+                >
                   Buy Now
-                </button>
-                <button className="w-full bg-gray-200 text-gray-800 py-2 rounded-md hover:bg-gray-300 transition-colors">
-                  Save to Watchlist
-                </button>
+                </Button>
+                <Button 
+                  variant={isWatchlisted ? "outline" : "secondary"}
+                  fullWidth
+                  onClick={handleWatchlistToggle}
+                >
+                  {isWatchlisted ? "Remove from Watchlist" : "Save to Watchlist"}
+                </Button>
               </div>
             </div>
           </div>
