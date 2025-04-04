@@ -41,7 +41,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       <div className="md:ml-64 min-h-screen">
         {/* Header */}
         <header className="bg-white shadow-sm py-4 px-6 flex justify-between items-center">
-          <h1 className="text-xl font-semibold text-gray-800">Atlas Dashboard</h1>
+          <h1 className="text-xl font-bold text-gray-900">Atlas Dashboard</h1>
           
           <div className="flex items-center space-x-4">
             {/* Notification icon with dropdown */}
@@ -55,7 +55,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             {/* User dropdown placeholder */}
             <div className="flex items-center cursor-pointer">
               <div className="w-8 h-8 rounded-full bg-gray-300"></div>
-              <span className="ml-2 text-sm font-medium hidden sm:block">Demo User</span>
+              <span className="ml-2 text-sm font-medium text-gray-900 hidden sm:block">Demo User</span>
             </div>
           </div>
         </header>

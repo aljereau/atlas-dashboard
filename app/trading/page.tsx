@@ -172,15 +172,15 @@ export default function TradingPage() {
   
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-6">Property Trading</h1>
+      <h1 className="text-2xl font-bold mb-6 text-gray-900">Property Trading</h1>
       
       {/* Trading tabs */}
       <div className="flex border-b border-gray-200 mb-6">
         <button
           className={`px-4 py-2 font-medium text-sm ${
             activeTab === 'buy'
-              ? 'border-b-2 border-blue-500 text-blue-600'
-              : 'text-gray-500 hover:text-gray-700'
+              ? 'border-b-2 border-blue-500 text-blue-700 font-semibold'
+              : 'text-gray-700 hover:text-gray-900'
           }`}
           onClick={() => setActiveTab('buy')}
         >
@@ -189,8 +189,8 @@ export default function TradingPage() {
         <button
           className={`px-4 py-2 font-medium text-sm ${
             activeTab === 'sell'
-              ? 'border-b-2 border-blue-500 text-blue-600'
-              : 'text-gray-500 hover:text-gray-700'
+              ? 'border-b-2 border-blue-500 text-blue-700 font-semibold'
+              : 'text-gray-700 hover:text-gray-900'
           }`}
           onClick={() => setActiveTab('sell')}
         >
@@ -215,14 +215,14 @@ export default function TradingPage() {
                       onChange={(e) => setSearchTerm(e.target.value)}
                     />
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-600" viewBox="0 0 20 20" fill="currentColor">
                         <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
                       </svg>
                     </div>
                   </div>
                   <div className="flex space-x-2">
                     <select
-                      className="pl-3 pr-10 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="pl-3 pr-10 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-800"
                       value={sortBy}
                       onChange={(e) => handleSortChange(e.target.value as any)}
                     >
@@ -231,15 +231,15 @@ export default function TradingPage() {
                       <option value="name">Name</option>
                     </select>
                     <button
-                      className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
                       onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
                     >
                       {sortOrder === 'asc' ? (
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-500" viewBox="0 0 20 20" fill="currentColor">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-700" viewBox="0 0 20 20" fill="currentColor">
                           <path fillRule="evenodd" d="M5.293 7.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 5.414V17a1 1 0 11-2 0V5.414L6.707 7.707a1 1 0 01-1.414 0z" clipRule="evenodd" />
                         </svg>
                       ) : (
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-500" viewBox="0 0 20 20" fill="currentColor">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-700" viewBox="0 0 20 20" fill="currentColor">
                           <path fillRule="evenodd" d="M14.707 12.293a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L9 14.586V3a1 1 0 012 0v11.586l2.293-2.293a1 1 0 011.414 0z" clipRule="evenodd" />
                         </svg>
                       )}
@@ -252,11 +252,11 @@ export default function TradingPage() {
                 <table className="min-w-full divide-y divide-gray-200">
                   <thead className="bg-gray-50">
                     <tr>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Property</th>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Score</th>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price (Total)</th>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Token Price</th>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"></th>
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Property</th>
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Score</th>
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Price (Total)</th>
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Token Price</th>
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider"></th>
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
@@ -277,7 +277,7 @@ export default function TradingPage() {
                             </div>
                             <div>
                               <div className="text-sm font-medium text-gray-900">{property.name}</div>
-                              <div className="text-sm text-gray-500">{property.location}</div>
+                              <div className="text-sm text-gray-700">{property.location}</div>
                             </div>
                           </div>
                         </td>
@@ -286,15 +286,15 @@ export default function TradingPage() {
                             {property.score.toFixed(1)}
                           </span>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                           {formatCurrency(property.price)}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                           {formatCurrency(property.price / 1000)}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                           <button
-                            className="text-blue-600 hover:text-blue-900"
+                            className="text-blue-700 hover:text-blue-900 font-semibold"
                             onClick={(e) => {
                               e.stopPropagation();
                               handlePropertySelect(property);
@@ -308,7 +308,7 @@ export default function TradingPage() {
                     
                     {filteredProperties.length === 0 && (
                       <tr>
-                        <td colSpan={5} className="px-6 py-8 text-center text-sm text-gray-500">
+                        <td colSpan={5} className="px-6 py-8 text-center text-sm text-gray-700">
                           No properties found matching your search
                         </td>
                       </tr>
@@ -322,12 +322,12 @@ export default function TradingPage() {
           {/* Right panel - Order panel */}
           <div>
             <div className="bg-white rounded-lg shadow p-6 h-full">
-              <h2 className="text-lg font-semibold mb-4">Buy Order</h2>
+              <h2 className="text-lg font-semibold mb-4 text-gray-900">Buy Order</h2>
               
               {selectedProperty ? (
                 <div className="space-y-6">
                   <div>
-                    <h3 className="text-sm font-medium text-gray-500 mb-2">Selected Property</h3>
+                    <h3 className="text-sm font-medium text-gray-700 mb-2">Selected Property</h3>
                     <div className="flex items-center">
                       <div className="h-12 w-12 flex-shrink-0 rounded overflow-hidden mr-3">
                         <PropertyImage 
@@ -337,8 +337,8 @@ export default function TradingPage() {
                         />
                       </div>
                       <div>
-                        <p className="font-medium">{selectedProperty.name}</p>
-                        <p className="text-sm text-gray-500">{selectedProperty.location}</p>
+                        <p className="font-medium text-gray-900">{selectedProperty.name}</p>
+                        <p className="text-sm text-gray-700">{selectedProperty.location}</p>
                       </div>
                     </div>
                   </div>
@@ -351,34 +351,34 @@ export default function TradingPage() {
                       type="number"
                       min="100"
                       step="100"
-                      className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                      className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-gray-900"
                       value={buyAmount}
                       onChange={(e) => setBuyAmount(Number(e.target.value))}
                     />
                   </div>
                   
                   <div className="bg-gray-50 rounded-lg p-4">
-                    <h3 className="text-sm font-medium text-gray-700 mb-3">Order Summary</h3>
+                    <h3 className="text-sm font-medium text-gray-800 mb-3">Order Summary</h3>
                     <div className="space-y-2">
                       <div className="flex justify-between">
-                        <span className="text-sm text-gray-500">Token Price</span>
-                        <span className="text-sm font-medium">{formatCurrency(tokenInfo.price)}</span>
+                        <span className="text-sm text-gray-700">Token Price</span>
+                        <span className="text-sm font-medium text-gray-900">{formatCurrency(tokenInfo.price)}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-sm text-gray-500">Tokens to Buy</span>
-                        <span className="text-sm font-medium">{tokenInfo.count}</span>
+                        <span className="text-sm text-gray-700">Tokens to Buy</span>
+                        <span className="text-sm font-medium text-gray-900">{tokenInfo.count}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-sm text-gray-500">Ownership</span>
-                        <span className="text-sm font-medium">{tokenInfo.ownership.toFixed(2)}%</span>
+                        <span className="text-sm text-gray-700">Ownership</span>
+                        <span className="text-sm font-medium text-gray-900">{tokenInfo.ownership.toFixed(2)}%</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-sm text-gray-500">Transaction Fee</span>
-                        <span className="text-sm font-medium">{formatCurrency(buyAmount * 0.015)}</span>
+                        <span className="text-sm text-gray-700">Transaction Fee</span>
+                        <span className="text-sm font-medium text-gray-900">{formatCurrency(buyAmount * 0.015)}</span>
                       </div>
                       <div className="pt-2 border-t border-gray-200 flex justify-between">
-                        <span className="text-sm font-medium">Total</span>
-                        <span className="text-sm font-medium">{formatCurrency(buyAmount + (buyAmount * 0.015))}</span>
+                        <span className="text-sm font-semibold text-gray-900">Total</span>
+                        <span className="text-sm font-semibold text-gray-900">{formatCurrency(buyAmount + (buyAmount * 0.015))}</span>
                       </div>
                     </div>
                   </div>
@@ -386,7 +386,7 @@ export default function TradingPage() {
                   <div>
                     <h3 className="text-sm font-medium text-gray-700 mb-2">Select Portfolio</h3>
                     <select
-                      className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                      className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-gray-900"
                       value={selectedPortfolioId}
                       onChange={(e) => setSelectedPortfolioId(e.target.value)}
                     >
@@ -409,7 +409,7 @@ export default function TradingPage() {
                   </Button>
                   
                   <div className="h-40 border-t pt-4">
-                    <p className="text-xs text-gray-500 mb-2">12-Month Price History</p>
+                    <p className="text-xs text-gray-700 mb-2">12-Month Price History</p>
                     {getPropertyPriceHistory() && (
                       <ChartComponent
                         type="line"
@@ -425,7 +425,7 @@ export default function TradingPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
                   </svg>
                   <h3 className="text-lg font-medium text-gray-900 mb-1">No Property Selected</h3>
-                  <p className="text-gray-500">Select a property from the list to create a buy order.</p>
+                  <p className="text-gray-700">Select a property from the list to create a buy order.</p>
                 </div>
               )}
             </div>
