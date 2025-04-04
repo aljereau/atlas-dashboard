@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Notification } from '@/data/types/analytics';
 import Link from 'next/link';
 
@@ -43,7 +43,7 @@ export default function NotificationCenter({
   
   // Get icon for notification type
   const getNotificationIcon = (type: string, importance: string) => {
-    let iconPath = '';
+    let iconPath: React.ReactNode = '';
     let bgColorClass = '';
     
     switch (type) {
