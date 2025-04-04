@@ -34,6 +34,11 @@ export default function Sidebar() {
       name: 'Watchlist',
       path: '/watchlist',
       icon: '⭐'
+    },
+    {
+      name: 'Market Analysis',
+      path: '/market-analysis',
+      icon: '📈'
     }
   ];
 
