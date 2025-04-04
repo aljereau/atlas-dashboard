@@ -273,7 +273,7 @@ export default function PortfolioPage() {
                       </div>
                       <div>
                         <span className="text-xs text-gray-500">Expected Value</span>
-                        <p className="text-base font-medium">{formatCurrency(selectedPortfolio.totalValue * 1.425)}</p>
+                        <p className="text-base font-medium">{formatCurrency(selectedPortfolio?.totalValue ? selectedPortfolio.totalValue * 1.425 : 0)}</p>
                       </div>
                     </div>
                   </div>
@@ -287,7 +287,7 @@ export default function PortfolioPage() {
                       </div>
                       <div>
                         <span className="text-xs text-gray-500">Expected Value</span>
-                        <p className="text-base font-medium">{formatCurrency(selectedPortfolio.totalValue * 0.918)}</p>
+                        <p className="text-base font-medium">{formatCurrency(selectedPortfolio?.totalValue ? selectedPortfolio.totalValue * 0.918 : 0)}</p>
                       </div>
                     </div>
                   </div>
@@ -301,7 +301,7 @@ export default function PortfolioPage() {
                       </div>
                       <div>
                         <span className="text-xs text-gray-500">Expected Value</span>
-                        <p className="text-base font-medium">{formatCurrency(selectedPortfolio.totalValue * 1.783)}</p>
+                        <p className="text-base font-medium">{formatCurrency(selectedPortfolio?.totalValue ? selectedPortfolio.totalValue * 1.783 : 0)}</p>
                       </div>
                     </div>
                   </div>

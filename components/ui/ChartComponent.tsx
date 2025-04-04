@@ -1,10 +1,11 @@
 'use client';
 
 interface ChartComponentProps {
-  type: 'line' | 'bar' | 'pie';
+  type: 'line' | 'bar' | 'pie' | 'doughnut';
   title?: string;
   height?: number;
   data?: any; // Will be properly typed in future phases
+  options?: any;
 }
 
 export default function ChartComponent({
