@@ -1,4 +1,5 @@
-import { v4 as uuidv4 } from 'uuid';
+// import { v4 as uuidv4 } from 'uuid';
+import { generateId } from '@/utils/idGenerator';
 import { Portfolio, PortfolioHolding, PortfolioTransaction, PortfolioDistribution, RiskLevel, UserPortfolioSummary } from '../types/portfolio';
 import { properties } from './properties';
 
@@ -7,7 +8,7 @@ const createMockHoldings = (count: number, portfolioId: string): PortfolioHoldin
   const holdings: PortfolioHolding[] = [];
   
   // Use subset of available properties
-  const availableProperties = properties.slice(0, 10);
+  const availableProperties = properties.slice(0, 5); // Reduced from 10 to 5 for better performance
   
   for (let i = 0; i < count; i++) {
     const propertyIndex = i % availableProperties.length;
@@ -27,7 +28,7 @@ const createMockHoldings = (count: number, portfolioId: string): PortfolioHoldin
     const annualIncome = Number((property.price * (property.yield / 100) * (ownership / 100)).toFixed(2));
     
     holdings.push({
-      id: uuidv4(),
+      id: generateId('holding'),
       propertyId: property.id,
       propertyName: property.name,
       location: property.location,
@@ -73,9 +74,9 @@ const createPortfolio = (id: string, name: string, holdingsCount: number): Portf
 
 // Create mock portfolios
 export const portfolios: Portfolio[] = [
-  createPortfolio(uuidv4(), 'Main Portfolio', 4),
-  createPortfolio(uuidv4(), 'Growth Portfolio', 3),
-  createPortfolio(uuidv4(), 'Income Portfolio', 2)
+  createPortfolio(generateId('portfolio'), 'Main Portfolio', 3), // Reduced from 4 to 3
+  createPortfolio(generateId('portfolio'), 'Growth Portfolio', 2), // Reduced from 3 to 2
+  createPortfolio(generateId('portfolio'), 'Income Portfolio', 2)
 ];
 
 // Create a user summary
@@ -107,7 +108,7 @@ portfolios.forEach(portfolio => {
   portfolio.holdings.forEach(holding => {
     // Add buy transaction for each holding
     transactions.push({
-      id: uuidv4(),
+      id: generateId('transaction'),
       portfolioId: portfolio.id,
       propertyId: holding.propertyId,
       propertyName: holding.propertyName,
@@ -119,8 +120,8 @@ portfolios.forEach(portfolio => {
       fees: Number((holding.purchasePrice * 0.015).toFixed(2)) // 1.5% transaction fee
     });
     
-    // Add some sell transactions for a random subset (about 30%)
-    if (Math.random() > 0.7) {
+    // Add some sell transactions for a random subset (about 30%) - reduced probability to 20% for better performance
+    if (Math.random() > 0.8) {
       const sellDate = new Date();
       sellDate.setMonth(sellDate.getMonth() - Math.floor(Math.random() * 6)); // Between now and 6 months ago
       
@@ -128,7 +129,7 @@ portfolios.forEach(portfolio => {
       const sellPrice = holding.currentValue / holding.tokens;
       
       transactions.push({
-        id: uuidv4(),
+        id: generateId('transaction'),
         portfolioId: portfolio.id,
         propertyId: holding.propertyId,
         propertyName: holding.propertyName,
@@ -146,7 +147,7 @@ portfolios.forEach(portfolio => {
 // Sort transactions by date (newest first)
 transactions.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
-// Portfolio distribution by location
+// Portfolio distribution by location - memoized to improve performance
 export const portfolioDistributionByLocation: PortfolioDistribution[] = (() => {
   const locationMap = new Map<string, number>();
   let totalValue = 0;

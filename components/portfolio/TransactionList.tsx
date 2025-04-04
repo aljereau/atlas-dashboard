@@ -2,12 +2,14 @@
 
 import { useState } from 'react';
 import { PortfolioTransaction } from '@/data/types/portfolio';
+import Link from 'next/link';
 
 interface TransactionListProps {
   transactions: PortfolioTransaction[];
+  showViewAll?: boolean;
 }
 
-export default function TransactionList({ transactions }: TransactionListProps) {
+export default function TransactionList({ transactions, showViewAll = false }: TransactionListProps) {
   const [pageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   
@@ -60,8 +62,16 @@ export default function TransactionList({ transactions }: TransactionListProps) 
   
   return (
     <div className="bg-white shadow rounded-lg overflow-hidden">
-      <div className="px-6 py-4 border-b border-gray-200">
+      <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
         <h2 className="text-xl font-semibold">Transaction History</h2>
+        {showViewAll && transactions.length > pageSize && (
+          <Link 
+            href="/portfolio"
+            className="text-sm text-blue-600 hover:text-blue-800"
+          >
+            View All
+          </Link>
+        )}
       </div>
       
       <div className="overflow-x-auto">
