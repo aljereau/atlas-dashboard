@@ -107,25 +107,25 @@ export default function PropertyCard({ property, onClick }: PropertyCardProps) {
       </div>
       
       <div className="p-4">
-        <h3 className="text-lg font-semibold truncate">{property.name}</h3>
-        <p className="text-gray-600 text-sm mb-2">{property.location}</p>
+        <h3 className="text-lg font-semibold truncate text-gray-900">{property.name}</h3>
+        <p className="text-gray-700 text-sm mb-2">{property.location}</p>
         
-        <div className="text-xl font-bold mb-2">
+        <div className="text-xl font-bold mb-2 text-gray-900">
           {formatPrice(property.price)}
         </div>
         
         <div className="grid grid-cols-2 gap-2 text-sm">
           <div>
-            <span className="text-gray-500">Yield:</span>
+            <span className="text-gray-700">Yield:</span>
             <span className="ml-1 font-medium text-green-600">{property.yield}%</span>
           </div>
           <div>
-            <span className="text-gray-500">Appreciation:</span>
+            <span className="text-gray-700">Appreciation:</span>
             <span className="ml-1 font-medium text-blue-600">{property.appreciation}%</span>
           </div>
         </div>
         
-        <button className="mt-3 w-full py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+        <button className="mt-3 w-full py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors font-medium">
           View Details
         </button>
       </div>

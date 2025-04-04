@@ -105,7 +105,7 @@ export default function ExplorePage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-6">Explore Properties</h1>
+      <h1 className="text-2xl font-bold mb-6 text-gray-900">Explore Properties</h1>
       
       {/* Filter bar */}
       <FilterBar onFilterChange={handleFilterChange} />
@@ -113,7 +113,7 @@ export default function ExplorePage() {
       {filteredProperties.length === 0 ? (
         <div className="bg-white rounded-lg shadow p-8 text-center">
           <h3 className="text-lg font-medium text-gray-900 mb-2">No properties match your filters</h3>
-          <p className="text-gray-500 mb-4">Try adjusting your filters to see more properties.</p>
+          <p className="text-gray-700 mb-4">Try adjusting your filters to see more properties.</p>
           <Button 
             variant="primary" 
             onClick={() => setCurrentFilters({ location: 'All Locations', score: 'all', yield: 'all' })}
@@ -157,35 +157,35 @@ export default function ExplorePage() {
                 </div>
                 
                 <div className="mb-4">
-                  <p className="text-gray-600">{selectedProperty.location}</p>
+                  <p className="text-gray-700">{selectedProperty.location}</p>
                 </div>
                 
                 <div className="grid grid-cols-2 gap-4 mb-4">
                   <div className="bg-gray-100 p-3 rounded-md">
-                    <p className="text-sm text-gray-500">Size</p>
-                    <p className="font-semibold">{selectedProperty.sqMeters} m²</p>
+                    <p className="text-sm text-gray-700">Size</p>
+                    <p className="font-semibold text-gray-900">{selectedProperty.sqMeters} m²</p>
                   </div>
                   <div className="bg-gray-100 p-3 rounded-md">
-                    <p className="text-sm text-gray-500">Year Built</p>
-                    <p className="font-semibold">{selectedProperty.yearBuilt}</p>
+                    <p className="text-sm text-gray-700">Year Built</p>
+                    <p className="font-semibold text-gray-900">{selectedProperty.yearBuilt}</p>
                   </div>
                   <div className="bg-gray-100 p-3 rounded-md">
-                    <p className="text-sm text-gray-500">Energy Label</p>
-                    <p className="font-semibold">{selectedProperty.energyLabel}</p>
+                    <p className="text-sm text-gray-700">Energy Label</p>
+                    <p className="font-semibold text-gray-900">{selectedProperty.energyLabel}</p>
                   </div>
                   <div className="bg-gray-100 p-3 rounded-md">
-                    <p className="text-sm text-gray-500">Price</p>
-                    <p className="font-semibold">{formatPrice(selectedProperty.price)}</p>
+                    <p className="text-sm text-gray-700">Price</p>
+                    <p className="font-semibold text-gray-900">{formatPrice(selectedProperty.price)}</p>
                   </div>
                 </div>
                 
                 <div className="grid grid-cols-2 gap-4 mb-4">
                   <div>
-                    <span className="text-gray-500">Yield:</span>
+                    <span className="text-gray-700">Yield:</span>
                     <span className="ml-1 font-medium text-green-600">{selectedProperty.yield}%</span>
                   </div>
                   <div>
-                    <span className="text-gray-500">Appreciation:</span>
+                    <span className="text-gray-700">Appreciation:</span>
                     <span className="ml-1 font-medium text-blue-600">{selectedProperty.appreciation}%</span>
                   </div>
                 </div>
@@ -203,7 +203,7 @@ export default function ExplorePage() {
               
               {/* Right panel - Investment Calculator */}
               <div>
-                <h3 className="text-lg font-semibold mb-4">Investment Calculator</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Investment Calculator</h3>
                 
                 <div className="p-4 bg-gray-100 rounded-md mb-6">
                   <div className="mb-4">
@@ -214,7 +214,7 @@ export default function ExplorePage() {
                       type="number"
                       value={investmentAmount}
                       onChange={(e) => setInvestmentAmount(Number(e.target.value))}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-gray-900"
                       min="1000"
                       step="1000"
                     />
@@ -222,21 +222,21 @@ export default function ExplorePage() {
                   
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <p className="text-sm text-gray-500">Ownership</p>
-                      <p className="text-xl font-semibold">{ownershipDetails.percentage.toFixed(2)}%</p>
+                      <p className="text-sm text-gray-700">Ownership</p>
+                      <p className="text-xl font-semibold text-gray-900">{ownershipDetails.percentage.toFixed(2)}%</p>
                     </div>
                     <div>
-                      <p className="text-sm text-gray-500">Tokens</p>
-                      <p className="text-xl font-semibold">{ownershipDetails.tokens}</p>
+                      <p className="text-sm text-gray-700">Tokens</p>
+                      <p className="text-xl font-semibold text-gray-900">{ownershipDetails.tokens}</p>
                     </div>
                     <div>
-                      <p className="text-sm text-gray-500">Annual Income</p>
+                      <p className="text-sm text-gray-700">Annual Income</p>
                       <p className="text-xl font-semibold text-green-600">
                         {formatPrice((selectedProperty.price * selectedProperty.yield / 100) * (ownershipDetails.percentage / 100))}
                       </p>
                     </div>
                     <div>
-                      <p className="text-sm text-gray-500">Expected App. (1yr)</p>
+                      <p className="text-sm text-gray-700">Expected App. (1yr)</p>
                       <p className="text-xl font-semibold text-blue-600">
                         {formatPrice(investmentAmount * selectedProperty.appreciation / 100)}
                       </p>
@@ -258,7 +258,7 @@ export default function ExplorePage() {
             {/* Advanced Analytics Section */}
             {propertyHistory && (
               <div>
-                <h3 className="text-xl font-semibold mb-3">Advanced Analytics</h3>
+                <h3 className="text-xl font-semibold text-gray-900 mb-3">Advanced Analytics</h3>
                 
                 {/* Timeframe selector */}
                 <div className="mb-4 flex justify-end">

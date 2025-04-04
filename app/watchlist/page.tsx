@@ -177,7 +177,7 @@ export default function WatchlistPage() {
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Watchlist</h1>
+        <h1 className="text-2xl font-bold text-gray-900">Watchlist</h1>
         
         {watchlistProperties.length > 0 && (
           <Button 
@@ -195,8 +195,8 @@ export default function WatchlistPage() {
         <button
           className={`px-4 py-2 font-medium text-sm ${
             activeTab === 'properties'
-              ? 'border-b-2 border-blue-500 text-blue-600'
-              : 'text-gray-500 hover:text-gray-700'
+              ? 'border-b-2 border-blue-500 text-blue-700 font-semibold'
+              : 'text-gray-700 hover:text-gray-900'
           }`}
           onClick={() => setActiveTab('properties')}
         >
@@ -205,8 +205,8 @@ export default function WatchlistPage() {
         <button
           className={`px-4 py-2 font-medium text-sm ${
             activeTab === 'notes'
-              ? 'border-b-2 border-blue-500 text-blue-600'
-              : 'text-gray-500 hover:text-gray-700'
+              ? 'border-b-2 border-blue-500 text-blue-700 font-semibold'
+              : 'text-gray-700 hover:text-gray-900'
           }`}
           onClick={() => setActiveTab('notes')}
         >
@@ -223,7 +223,7 @@ export default function WatchlistPage() {
               <input
                 type="text"
                 id="search"
-                className="w-full border border-gray-300 rounded-md p-2"
+                className="w-full border border-gray-300 rounded-md p-2 text-gray-900"
                 placeholder="Search by name or location..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -233,7 +233,7 @@ export default function WatchlistPage() {
               <label htmlFor="sort" className="block text-sm font-medium text-gray-700 mb-1">Sort By</label>
               <select
                 id="sort"
-                className="border border-gray-300 rounded-md p-2"
+                className="border border-gray-300 rounded-md p-2 text-gray-900"
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as any)}
               >
@@ -246,10 +246,10 @@ export default function WatchlistPage() {
           
           {searchTerm && (
             <div className="mt-2 text-sm">
-              <span className="text-gray-500">Found {filteredProperties.length} properties matching "{searchTerm}"</span>
+              <span className="text-gray-700">Found {filteredProperties.length} properties matching "{searchTerm}"</span>
               {filteredProperties.length !== watchlistProperties.length && (
                 <button 
-                  className="ml-2 text-blue-600 hover:text-blue-800"
+                  className="ml-2 text-blue-700 hover:text-blue-900 font-medium"
                   onClick={() => setSearchTerm('')}
                 >
                   Clear search
@@ -288,7 +288,7 @@ export default function WatchlistPage() {
           ) : (
             <div className="text-center py-12 bg-white rounded-lg shadow">
               <h3 className="text-lg font-medium text-gray-900 mb-2">Your watchlist is empty</h3>
-              <p className="text-gray-500 mb-6">Start adding properties to track your interests.</p>
+              <p className="text-gray-700 mb-6">Start adding properties to track your interests.</p>
               <Button 
                 variant="primary"
                 onClick={() => router.push('/explore')}
@@ -307,8 +307,8 @@ export default function WatchlistPage() {
               <div key={property.id} className="bg-white rounded-lg shadow overflow-hidden">
                 <div className="p-4 border-b border-gray-200 flex justify-between items-center">
                   <div>
-                    <h2 className="text-lg font-semibold">{property.name}</h2>
-                    <p className="text-sm text-gray-600">{property.location}</p>
+                    <h2 className="text-lg font-semibold text-gray-900">{property.name}</h2>
+                    <p className="text-sm text-gray-700">{property.location}</p>
                   </div>
                   <Button 
                     variant="outline" 
@@ -338,7 +338,7 @@ export default function WatchlistPage() {
               ) : (
                 <>
                   <h3 className="text-lg font-medium text-gray-900 mb-2">No notes yet</h3>
-                  <p className="text-gray-500 mb-4">Add properties to your watchlist to take notes.</p>
+                  <p className="text-gray-700 mb-4">Add properties to your watchlist to take notes.</p>
                   <Button 
                     variant="primary"
                     onClick={() => router.push('/explore')}
@@ -360,7 +360,7 @@ export default function WatchlistPage() {
         size="sm"
       >
         <div className="p-4 text-center">
-          <p>{modalContent.message}</p>
+          <p className="text-gray-900">{modalContent.message}</p>
         </div>
       </Modal>
     </div>
