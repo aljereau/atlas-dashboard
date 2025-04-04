@@ -1,90 +1,38 @@
 'use client';
 
+import Button from '@/components/ui/Button';
 import ChartComponent from '@/components/ui/ChartComponent';
 
 export default function PortfolioPage() {
+  // MVP state - empty portfolio
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-6">Portfolio</h1>
+      <h1 className="text-2xl font-bold mb-6">Your Portfolio</h1>
       
-      {/* Performance summary cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <div className="bg-white p-4 rounded-lg shadow">
-          <h2 className="text-sm text-gray-500 mb-1">Total Value</h2>
-          <p className="text-2xl font-bold">€52,450</p>
-          <p className="text-sm text-green-600">+12.4% overall</p>
+      {/* Empty state */}
+      <div className="bg-white rounded-lg shadow p-8 text-center">
+        <div className="w-16 h-16 mx-auto bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mb-4">
+          <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+          </svg>
         </div>
-        
-        <div className="bg-white p-4 rounded-lg shadow">
-          <h2 className="text-sm text-gray-500 mb-1">Monthly Income</h2>
-          <p className="text-2xl font-bold">€320</p>
-          <p className="text-sm text-green-600">7.3% yield</p>
-        </div>
-        
-        <div className="bg-white p-4 rounded-lg shadow">
-          <h2 className="text-sm text-gray-500 mb-1">Properties Owned</h2>
-          <p className="text-2xl font-bold">4</p>
-          <p className="text-sm text-gray-600">12 transactions</p>
-        </div>
-        
-        <div className="bg-white p-4 rounded-lg shadow">
-          <h2 className="text-sm text-gray-500 mb-1">Next Payout</h2>
-          <p className="text-2xl font-bold">€175</p>
-          <p className="text-sm text-gray-600">In 12 days</p>
-        </div>
+        <h3 className="text-lg font-medium text-gray-900 mb-2">Your portfolio is empty</h3>
+        <p className="text-gray-700 mb-6">Start building your real estate portfolio by exploring available properties.</p>
+        <Button variant="primary">Explore Properties</Button>
       </div>
       
-      {/* Performance chart */}
-      <div className="bg-white p-4 rounded-lg shadow mb-6">
-        <h2 className="text-lg font-semibold mb-4">Portfolio Performance</h2>
-        <ChartComponent 
-          type="line" 
-          height={250}
-        />
-      </div>
-      
-      {/* Properties table - placeholder */}
-      <div className="bg-white rounded-lg shadow overflow-hidden">
-        <h2 className="text-lg font-semibold p-4 border-b">Your Properties</h2>
+      {/* Placeholder for future investment summary */}
+      <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="bg-white rounded-lg shadow p-4">
+          <h2 className="text-lg font-semibold mb-4 text-gray-800">Portfolio Overview</h2>
+          <p className="text-gray-700 mb-6">When you add properties to your portfolio, you'll see performance metrics here.</p>
+          <ChartComponent type="pie" />
+        </div>
         
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Property</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tokens</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Entry Price</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Current Price</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ROI</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Monthly Income</th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {/* Placeholder rows */}
-              {Array.from({ length: 4 }).map((_, index) => (
-                <tr key={index} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center">
-                      <div className="h-10 w-10 bg-gray-300 rounded-md mr-3"></div>
-                      <div>
-                        <div className="font-medium text-gray-900">Property {index + 1}</div>
-                        <div className="text-sm text-gray-500">Location {index + 1}</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{(index + 1) * 10}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">€{(index + 1) * 100}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">€{(index + 1) * 110}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-green-600">+{(index + 1) * 2}%</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">€{(index + 1) * 20}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <button className="text-blue-600 hover:text-blue-900">View Details</button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className="bg-white rounded-lg shadow p-4">
+          <h2 className="text-lg font-semibold mb-4 text-gray-800">Investment Growth</h2>
+          <p className="text-gray-700 mb-6">Track your investment growth over time.</p>
+          <ChartComponent type="line" />
         </div>
       </div>
     </div>

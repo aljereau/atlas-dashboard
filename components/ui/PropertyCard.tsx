@@ -59,7 +59,7 @@ export default function PropertyCard({ property, onClick }: PropertyCardProps) {
         className={`absolute top-2 left-2 z-10 w-8 h-8 rounded-full flex items-center justify-center transition-colors ${
           isWatchlisted 
             ? 'bg-blue-500 text-white' 
-            : 'bg-white text-gray-400 hover:text-gray-600'
+            : 'bg-white text-gray-600 hover:text-gray-800'
         }`}
         onClick={handleWatchlistToggle}
         aria-label={isWatchlisted ? "Remove from watchlist" : "Add to watchlist"}
@@ -108,7 +108,7 @@ export default function PropertyCard({ property, onClick }: PropertyCardProps) {
       
       <div className="p-4">
         <h3 className="text-lg font-semibold truncate">{property.name}</h3>
-        <p className="text-gray-600 text-sm mb-2">{property.location}</p>
+        <p className="text-gray-700 text-sm mb-2">{property.location}</p>
         
         <div className="text-xl font-bold mb-2">
           {formatPrice(property.price)}
@@ -116,11 +116,11 @@ export default function PropertyCard({ property, onClick }: PropertyCardProps) {
         
         <div className="grid grid-cols-2 gap-2 text-sm">
           <div>
-            <span className="text-gray-500">Yield:</span>
+            <span className="text-gray-700">Yield:</span>
             <span className="ml-1 font-medium text-green-600">{property.yield}%</span>
           </div>
           <div>
-            <span className="text-gray-500">Appreciation:</span>
+            <span className="text-gray-700">Appreciation:</span>
             <span className="ml-1 font-medium text-blue-600">{property.appreciation}%</span>
           </div>
         </div>

@@ -128,24 +128,24 @@ export default function ExplorePage() {
               </div>
               
               <div className="mb-4">
-                <p className="text-gray-600">{selectedProperty.location}</p>
+                <p className="text-gray-700">{selectedProperty.location}</p>
               </div>
               
               <div className="grid grid-cols-2 gap-4 mb-4">
                 <div className="bg-gray-100 p-3 rounded-md">
-                  <p className="text-sm text-gray-500">Size</p>
+                  <p className="text-sm text-gray-700">Size</p>
                   <p className="font-semibold">{selectedProperty.sqMeters} m²</p>
                 </div>
                 <div className="bg-gray-100 p-3 rounded-md">
-                  <p className="text-sm text-gray-500">Year Built</p>
+                  <p className="text-sm text-gray-700">Year Built</p>
                   <p className="font-semibold">{selectedProperty.yearBuilt}</p>
                 </div>
                 <div className="bg-gray-100 p-3 rounded-md">
-                  <p className="text-sm text-gray-500">Energy Label</p>
+                  <p className="text-sm text-gray-700">Energy Label</p>
                   <p className="font-semibold">{selectedProperty.energyLabel}</p>
                 </div>
                 <div className="bg-gray-100 p-3 rounded-md">
-                  <p className="text-sm text-gray-500">Price</p>
+                  <p className="text-sm text-gray-700">Price</p>
                   <p className="font-semibold">{formatPrice(selectedProperty.price)}</p>
                 </div>
               </div>
@@ -154,15 +154,15 @@ export default function ExplorePage() {
                 <h3 className="font-semibold mb-2">AI Score Breakdown</h3>
                 <div className="bg-gray-100 p-3 rounded-md">
                   <div className="flex justify-between mb-1">
-                    <span className="text-sm text-gray-500">Overall</span>
+                    <span className="text-sm text-gray-700">Overall</span>
                     <span className="font-medium">{selectedProperty.score.toFixed(1)}/10</span>
                   </div>
                   <div className="flex justify-between mb-1">
-                    <span className="text-sm text-gray-500">Yield</span>
+                    <span className="text-sm text-gray-700">Yield</span>
                     <span className="font-medium">{selectedProperty.yield.toFixed(1)}/10</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-sm text-gray-500">Appreciation</span>
+                    <span className="text-sm text-gray-700">Appreciation</span>
                     <span className="font-medium">{selectedProperty.appreciation.toFixed(1)}/10</span>
                   </div>
                 </div>
@@ -170,7 +170,7 @@ export default function ExplorePage() {
 
               <div className="mb-4">
                 <h3 className="font-semibold mb-2">Property Description</h3>
-                <p className="text-gray-600">{selectedProperty.description}</p>
+                <p className="text-gray-700">{selectedProperty.description}</p>
               </div>
             </div>
             
@@ -180,7 +180,7 @@ export default function ExplorePage() {
                 <h3 className="font-semibold mb-2">Investment Simulation</h3>
                 <div className="bg-gray-100 p-4 rounded-md">
                   <div className="mb-4">
-                    <label className="block text-sm text-gray-500 mb-1">Investment Amount (€)</label>
+                    <label className="block text-sm text-gray-700 mb-1">Investment Amount (€)</label>
                     <input 
                       type="number" 
                       className="w-full border border-gray-300 rounded-md px-3 py-2"
