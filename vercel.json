@@ -1,0 +1,29 @@
+{
+  "version": 2,
+  "buildCommand": "npm run build",
+  "installCommand": "npm install",
+  "framework": "nextjs",
+  "functions": {
+    "api/*.js": {
+      "memory": 1024
+    }
+  },
+  "redirects": [
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "header",
+          "key": "x-vercel-protection-bypass"
+        }
+      ],
+      "destination": "/$1",
+      "permanent": false
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/api/auth",
+      "permanent": false
+    }
+  ]
+} 
