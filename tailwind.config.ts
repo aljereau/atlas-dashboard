@@ -1,6 +1,5 @@
-import type { Config } from "tailwindcss";
-
-const config: Config = {
+/** @type {import('tailwindcss').Config} */
+module.exports = {
   darkMode: 'class',
   content: [
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
@@ -10,9 +9,9 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        primary: "rgb(var(--color-primary) / <alpha-value>)",
         background: "rgb(var(--color-background) / <alpha-value>)",
         foreground: "rgb(var(--color-foreground) / <alpha-value>)",
+        primary: "rgb(var(--color-primary) / <alpha-value>)",
         card: "rgb(var(--color-card) / <alpha-value>)",
         "card-foreground": "rgb(var(--color-card-foreground) / <alpha-value>)",
         muted: "rgb(var(--color-muted) / <alpha-value>)",
@@ -59,5 +58,4 @@ const config: Config = {
     },
   },
   plugins: [],
-};
-export default config; 
+}; 

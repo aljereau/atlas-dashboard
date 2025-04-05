@@ -4,17 +4,42 @@ import { useState, useEffect } from 'react';
 import { Property } from '@/data/mock/properties';
 import { isInWatchlist, toggleWatchlist } from '@/utils/localStorage';
 import PropertyImage from './PropertyImage';
+import { PropertyTag, propertyTags } from '@/data/mock/ai-features';
 
 interface PropertyCardProps {
   property: Property;
   onClick?: () => void;
   animateHover?: boolean;
+  showTags?: boolean;
 }
 
-export default function PropertyCard({ property, onClick, animateHover = true }: PropertyCardProps) {
+export default function PropertyCard({ property, onClick, animateHover = true, showTags = true }: PropertyCardProps) {
   const [isWatchlisted, setIsWatchlisted] = useState(false);
   const [addedAnimation, setAddedAnimation] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
+  
+  // Get property tags
+  const getPropertyTags = () => {
+    return propertyTags.find(pt => pt.propertyId === property.id)?.tags || [];
+  };
+  
+  // Get tag color (simplified version for the mini tags)
+  const getTagColor = (tag: PropertyTag) => {
+    const colors: Record<PropertyTag, string> = {
+      'high-yield': 'bg-green-100 dark:bg-green-900/30 border-green-200 dark:border-green-800',
+      'stable-growth': 'bg-blue-100 dark:bg-blue-900/30 border-blue-200 dark:border-blue-800',
+      'undervalued': 'bg-purple-100 dark:bg-purple-900/30 border-purple-200 dark:border-purple-800',
+      'prime-location': 'bg-indigo-100 dark:bg-indigo-900/30 border-indigo-200 dark:border-indigo-800',
+      'eco-friendly': 'bg-teal-100 dark:bg-teal-900/30 border-teal-200 dark:border-teal-800',
+      'high-demand': 'bg-orange-100 dark:bg-orange-900/30 border-orange-200 dark:border-orange-800',
+      'emerging-market': 'bg-cyan-100 dark:bg-cyan-900/30 border-cyan-200 dark:border-cyan-800',
+      'renovation-potential': 'bg-amber-100 dark:bg-amber-900/30 border-amber-200 dark:border-amber-800',
+      'limited-supply': 'bg-pink-100 dark:bg-pink-900/30 border-pink-200 dark:border-pink-800',
+      'price-drop': 'bg-red-100 dark:bg-red-900/30 border-red-200 dark:border-red-800',
+    };
+    
+    return colors[tag];
+  };
 
   // Check if property is in watchlist on component mount
   useEffect(() => {
@@ -34,7 +59,8 @@ export default function PropertyCard({ property, onClick, animateHover = true }:
   const getScoreColor = (score: number) => {
     if (score >= 8.5) return 'bg-green-500';
     if (score >= 7) return 'bg-blue-500';
-    if (score >= 5) return 'bg-yellow-500';
+    if (score >= 5.5) return 'bg-yellow-500';
+    if (score >= 4) return 'bg-orange-500';
     return 'bg-red-500';
   };
 
@@ -50,6 +76,17 @@ export default function PropertyCard({ property, onClick, animateHover = true }:
       setTimeout(() => setAddedAnimation(false), 1500);
     }
   };
+  
+  // Format tag display name
+  const formatTagName = (tag: PropertyTag): string => {
+    return tag
+      .split('-')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  };
+  
+  // The property's tags
+  const tags = getPropertyTags();
 
   return (
     <div 
@@ -113,6 +150,25 @@ export default function PropertyCard({ property, onClick, animateHover = true }:
             {property.score.toFixed(1)}
           </span>
         </div>
+        
+        {/* AI tags - small version */}
+        {showTags && tags.length > 0 && (
+          <div className="absolute bottom-2 left-2 right-2 flex flex-wrap gap-1 justify-start">
+            {tags.slice(0, 2).map(tag => (
+              <span 
+                key={tag} 
+                className={`text-xs py-0.5 px-1.5 rounded-sm border font-medium ${getTagColor(tag)}`}
+              >
+                {formatTagName(tag)}
+              </span>
+            ))}
+            {tags.length > 2 && (
+              <span className="text-xs py-0.5 px-1.5 rounded-sm bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 font-medium">
+                +{tags.length - 2}
+              </span>
+            )}
+          </div>
+        )}
       </div>
       
       <div className="p-4">
