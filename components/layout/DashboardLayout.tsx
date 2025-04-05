@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Sidebar from './Sidebar';
 import NotificationCenter from '@/components/notifications/NotificationCenter';
+import ThemeToggle from '@/components/theme/ThemeToggle';
 import { notifications } from '@/data/mock/analytics';
 
 interface DashboardLayoutProps {
@@ -34,16 +35,19 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   };
   
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors duration-200">
       <Sidebar />
       
       {/* Main content area - adjusted to account for sidebar */}
       <div className="md:ml-64 min-h-screen">
         {/* Header */}
-        <header className="bg-white shadow-sm py-4 px-6 flex justify-between items-center">
-          <h1 className="text-xl font-bold text-gray-900">Atlas Dashboard</h1>
+        <header className="bg-white dark:bg-gray-800 shadow-sm py-4 px-6 flex justify-between items-center transition-colors duration-200">
+          <h1 className="text-xl font-bold text-gray-900 dark:text-white">Atlas Dashboard</h1>
           
           <div className="flex items-center space-x-4">
+            {/* Theme toggle */}
+            <ThemeToggle />
+            
             {/* Notification icon with dropdown */}
             <NotificationCenter 
               notifications={notificationList}
@@ -54,8 +58,8 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             
             {/* User dropdown placeholder */}
             <div className="flex items-center cursor-pointer">
-              <div className="w-8 h-8 rounded-full bg-gray-300"></div>
-              <span className="ml-2 text-sm font-medium text-gray-900 hidden sm:block">Demo User</span>
+              <div className="w-8 h-8 rounded-full bg-gray-300 dark:bg-gray-600"></div>
+              <span className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-200 hidden sm:block">Demo User</span>
             </div>
           </div>
         </header>
@@ -66,7 +70,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         </main>
         
         {/* Footer */}
-        <footer className="bg-white p-6 border-t text-center text-sm text-gray-500">
+        <footer className="bg-white dark:bg-gray-800 p-6 border-t dark:border-gray-700 text-center text-sm text-gray-500 dark:text-gray-400 transition-colors duration-200">
           <p>© {new Date().getFullYear()} Atlas Dashboard. All rights reserved.</p>
         </footer>
       </div>
