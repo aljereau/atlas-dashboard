@@ -11,6 +11,7 @@ export interface Property {
   yearBuilt: number;
   energyLabel: string;
   description: string;
+  active?: boolean; // Optional property to control visibility/status
 }
 
 // Reduced number of properties for better performance
