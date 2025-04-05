@@ -1,26 +1,60 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --color-primary: 37 99 235; /* blue-600 */
+  --color-background: 255 255 255; /* white */
+  --color-foreground: 23 23 23; /* gray-900 */
+  --color-card: 255 255 255; /* white */
+  --color-card-foreground: 23 23 23; /* gray-900 */
+  --color-muted: 229 231 235; /* gray-200 */
+  --color-muted-foreground: 107 114 128; /* gray-500 */
+  --color-accent: 243 244 246; /* gray-100 */
+  --color-border: 229 231 235; /* gray-200 */
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+.dark {
+  --color-primary: 59 130 246; /* blue-500 */
+  --color-background: 17 24 39; /* gray-900 */
+  --color-foreground: 248 250 252; /* gray-50 */
+  --color-card: 31 41 55; /* gray-800 */
+  --color-card-foreground: 243 244 246; /* gray-100 */
+  --color-muted: 55 65 81; /* gray-700 */
+  --color-muted-foreground: 156 163 175; /* gray-400 */
+  --color-accent: 31 41 55; /* gray-800 */
+  --color-border: 55 65 81; /* gray-700 */
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  body {
+    @apply bg-background text-foreground;
+  }
+
+  /* Transition all interactive elements for smoother UX */
+  a, button, input, select, textarea {
+    @apply transition-all duration-200;
+  }
+
+  /* Add smooth scrolling */
+  html {
+    scroll-behavior: smooth;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  /* Card styles with hover effect */
+  .card {
+    @apply bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300;
+  }
+
+  /* Button hover effects */
+  .btn {
+    @apply rounded-md px-4 py-2 font-medium transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98];
+  }
+
+  /* Input focus styles */
+  .input-focus {
+    @apply focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:outline-none;
+  }
 }

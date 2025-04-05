@@ -11,8 +11,10 @@ export interface Property {
   yearBuilt: number;
   energyLabel: string;
   description: string;
+  active?: boolean; // Optional property to control visibility/status
 }
 
+// Reduced number of properties for better performance
 export const properties: Property[] = [
   {
     id: "prop1",
@@ -153,145 +155,6 @@ export const properties: Property[] = [
     yearBuilt: 2017,
     energyLabel: "A",
     description: "Bright apartment with historic tile work and views of the Tagus river."
-  },
-  {
-    id: "prop11",
-    name: "Brussels Executive Suite",
-    location: "Brussels, Belgium",
-    score: 7.4,
-    price: 410000,
-    yield: 5.1,
-    appreciation: 3.4,
-    image: "/images/property11.jpg",
-    sqMeters: 90,
-    yearBuilt: 2011,
-    energyLabel: "B",
-    description: "Elegant office suite in the EU district with meeting rooms and reception area."
-  },
-  {
-    id: "prop12",
-    name: "Warsaw Modern Apartments",
-    location: "Warsaw, Poland",
-    score: 7.6,
-    price: 290000,
-    yield: 6.8,
-    appreciation: 4.9,
-    image: "/images/property12.jpg",
-    sqMeters: 88,
-    yearBuilt: 2020,
-    energyLabel: "A+",
-    description: "New development with contemporary design and energy-efficient features."
-  },
-  {
-    id: "prop13",
-    name: "Prague Historic Building",
-    location: "Prague, Czech Republic",
-    score: 8.1,
-    price: 350000,
-    yield: 5.7,
-    appreciation: 4.2,
-    image: "/images/property13.jpg",
-    sqMeters: 105,
-    yearBuilt: 1890,
-    energyLabel: "C",
-    description: "Renovated historic building with original features and modern conveniences."
-  },
-  {
-    id: "prop14",
-    name: "Helsinki Waterfront",
-    location: "Helsinki, Finland",
-    score: 8.2,
-    price: 480000,
-    yield: 4.8,
-    appreciation: 3.9,
-    image: "/images/property14.jpg",
-    sqMeters: 98,
-    yearBuilt: 2013,
-    energyLabel: "A",
-    description: "Scandinavian design apartment with sauna and sea views in a sought-after district."
-  },
-  {
-    id: "prop15",
-    name: "Budapest Riverside",
-    location: "Budapest, Hungary",
-    score: 7.7,
-    price: 320000,
-    yield: 6.1,
-    appreciation: 5.3,
-    image: "/images/property15.jpg",
-    sqMeters: 112,
-    yearBuilt: 2009,
-    energyLabel: "B",
-    description: "Apartment with views of the Danube and proximity to cultural attractions."
-  },
-  {
-    id: "prop16",
-    name: "Milan Fashion District",
-    location: "Milan, Italy",
-    score: 8.6,
-    price: 720000,
-    yield: 4.6,
-    appreciation: 4.5,
-    image: "/images/property16.jpg",
-    sqMeters: 125,
-    yearBuilt: 2007,
-    energyLabel: "B",
-    description: "Stylish apartment in Milan's fashion district with designer finishes."
-  },
-  {
-    id: "prop17",
-    name: "Athens Acropolis View",
-    location: "Athens, Greece",
-    score: 8.4,
-    price: 490000,
-    yield: 5.5,
-    appreciation: 4.1,
-    image: "/images/property17.jpg",
-    sqMeters: 130,
-    yearBuilt: 2015,
-    energyLabel: "A",
-    description: "Penthouse with panoramic views of the Acropolis and modern amenities."
-  },
-  {
-    id: "prop18",
-    name: "Luxembourg Business Park",
-    location: "Luxembourg City, Luxembourg",
-    score: 9.1,
-    price: 980000,
-    yield: 4.3,
-    appreciation: 4.0,
-    image: "/images/property18.jpg",
-    sqMeters: 200,
-    yearBuilt: 2018,
-    energyLabel: "A+",
-    description: "Premium office space in Luxembourg's financial district with state-of-the-art facilities."
-  },
-  {
-    id: "prop19",
-    name: "Bucharest City Center",
-    location: "Bucharest, Romania",
-    score: 7.3,
-    price: 250000,
-    yield: 7.2,
-    appreciation: 5.4,
-    image: "/images/property19.jpg",
-    sqMeters: 95,
-    yearBuilt: 2016,
-    energyLabel: "A",
-    description: "Modern apartment in a developing area with strong rental potential."
-  },
-  {
-    id: "prop20",
-    name: "Ljubljana Green Residence",
-    location: "Ljubljana, Slovenia",
-    score: 7.9,
-    price: 310000,
-    yield: 5.6,
-    appreciation: 4.7,
-    image: "/images/property20.jpg",
-    sqMeters: 108,
-    yearBuilt: 2019,
-    energyLabel: "A+",
-    description: "Eco-friendly residence with sustainable design and community garden."
   }
+  // Removed properties 11-20+ for better performance
 ]; 
