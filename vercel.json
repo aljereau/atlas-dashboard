@@ -5,7 +5,7 @@
   "framework": "nextjs",
   "functions": {
     "pages/api/*.js": {
-      "memory": 1024
+      "memory": 1536
     }
   },
   "redirects": [
@@ -27,3 +27,4 @@
     }
   ]
 } 
+
