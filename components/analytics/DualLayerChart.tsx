@@ -1,8 +1,9 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { TokenValueDataPoint } from '@/data/types/analytics';
 import ChartComponent from '@/components/ui/ChartComponent';
+import Chart from 'chart.js/auto';
 
 interface DualLayerChartProps {
   data: TokenValueDataPoint[];
@@ -19,7 +20,6 @@ export default function DualLayerChart({
   height = 300,
   timeframe = 'all'
 }: DualLayerChartProps) {
-  const chartContainerRef = useRef<HTMLDivElement>(null);
   const [tooltip, setTooltip] = useState<{
     date: string;
     fundamentalValue: number;
@@ -38,31 +38,45 @@ export default function DualLayerChart({
     y: 0
   });
 
-  // Add event listener to hide tooltip when mouse leaves chart area
-  useEffect(() => {
-    const chartContainer = chartContainerRef.current;
+  const chartRef = useRef<HTMLCanvasElement>(null);
+  const [chart, setChart] = useState<Chart | null>(null);
+
+  // Format date for chart display
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    if (timeframe === '1w') {
+      return date.toLocaleDateString(undefined, { weekday: 'short', day: 'numeric' });
+    } else if (timeframe === '1m') {
+      return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+    } else {
+      return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+    }
+  };
+
+  // Filter data based on timeframe
+  const filterDataByTimeframe = (data: TokenValueDataPoint[], timeframe: string) => {
+    if (timeframe === 'all') return data;
     
-    const handleMouseLeave = () => {
-      setTooltip(prev => ({ ...prev, visible: false }));
-    };
+    const now = new Date();
+    let cutoffDate = new Date();
     
-    if (chartContainer) {
-      chartContainer.addEventListener('mouseleave', handleMouseLeave);
+    if (timeframe === '1w') {
+      cutoffDate.setDate(now.getDate() - 7);
+    } else if (timeframe === '1m') {
+      cutoffDate.setMonth(now.getMonth() - 1);
+    } else if (timeframe === '3m') {
+      cutoffDate.setMonth(now.getMonth() - 3);
     }
     
-    return () => {
-      if (chartContainer) {
-        chartContainer.removeEventListener('mouseleave', handleMouseLeave);
-      }
-    };
-  }, []);
+    return data.filter(d => new Date(d.date) >= cutoffDate);
+  };
 
   // Filter data based on timeframe
   const filteredData = (() => {
     if (timeframe === 'all') return data;
     
     const now = new Date();
-    const cutoffDate = new Date();
+    let cutoffDate = new Date();
     
     if (timeframe === '1w') cutoffDate.setDate(now.getDate() - 7);
     else if (timeframe === '1m') cutoffDate.setMonth(now.getMonth() - 1);
@@ -95,43 +109,55 @@ export default function DualLayerChart({
 
   // Prepare chart data
   const chartData = {
-    labels: filteredData.map(d => d.date),
+    labels: filteredData.map(d => formatDate(d.date)),
     datasets: [
       {
+        type: 'line',
         label: 'Fundamental Value (€)',
         data: filteredData.map(d => d.fundamentalValue),
-        borderColor: 'rgba(59, 130, 246, 1)', // Blue
+        borderColor: 'rgba(59, 130, 246, 1)',
         backgroundColor: 'rgba(59, 130, 246, 0.1)',
         borderWidth: 2,
-        tension: 0.4,
-        yAxisID: 'value',
-        fill: false,
+        tension: 0.3,
         pointRadius: 0,
         pointHoverRadius: 5,
         pointHoverBackgroundColor: 'rgba(59, 130, 246, 1)',
+        pointHoverBorderColor: '#fff',
+        pointHoverBorderWidth: 2,
+        fill: false,
+        yAxisID: 'y',
+        z: 10,
       },
       {
+        type: 'line',
         label: 'Token Market Price (€)',
-        data: filteredData.map(d => d.marketValue),
-        borderColor: 'rgba(16, 185, 129, 1)', // Green
+        data: filteredData.map(d => d.tokenPrice || d.marketValue),
+        borderColor: 'rgba(16, 185, 129, 1)',
         backgroundColor: 'rgba(16, 185, 129, 0.1)',
         borderWidth: 2,
-        tension: 0.4,
-        yAxisID: 'value',
-        fill: false,
+        tension: 0.3,
         pointRadius: 0,
         pointHoverRadius: 5,
         pointHoverBackgroundColor: 'rgba(16, 185, 129, 1)',
+        pointHoverBorderColor: '#fff',
+        pointHoverBorderWidth: 2,
+        fill: false,
+        yAxisID: 'y',
+        z: 20,
       },
-      ...(showVolume ? [{
+      {
+        type: 'bar',
         label: 'Trading Volume',
         data: filteredData.map(d => d.volume),
-        type: 'bar',
-        backgroundColor: 'rgba(156, 163, 175, 0.5)', // Gray
-        yAxisID: 'volume',
+        backgroundColor: 'rgba(209, 213, 219, 0.5)',
+        borderColor: 'rgba(209, 213, 219, 0.8)',
+        borderWidth: 1,
+        borderRadius: 4,
+        barPercentage: 0.6,
+        yAxisID: 'yVolume',
         order: 3,
-      }] : []),
-    ],
+      }
+    ]
   };
 
   // Chart options
@@ -139,123 +165,396 @@ export default function DualLayerChart({
     responsive: true,
     maintainAspectRatio: false,
     interaction: {
-      mode: 'index' as const,
       intersect: false,
+      mode: 'index',
     },
     animation: {
-      duration: 1000, // Initial animation duration in ms
+      duration: 1000, // Only animate on initial load
+      onComplete: function(this: any) {
+        // Store the animation so it won't re-trigger on hover
+        this.animationsComplete = true;
+      },
+      onProgress: function(this: any) {
+        // Skip animation if it's already been completed once
+        if (this.animationsComplete === true) {
+          this.animations.forEach((animation: any) => {
+            animation.active = false;
+          });
+        }
+      }
     },
-    hover: {
-      animationDuration: 0, // Disable animation on hover
+    plugins: {
+      legend: {
+        position: 'top',
+        align: 'start',
+        labels: {
+          boxWidth: 15,
+          usePointStyle: true,
+          pointStyle: 'circle',
+          padding: 20,
+        },
+      },
+      tooltip: {
+        enabled: true,
+        backgroundColor: 'rgba(255, 255, 255, 0.95)',
+        titleColor: '#1f2937',
+        bodyColor: '#4b5563',
+        titleFont: {
+          size: 13,
+          weight: 'bold',
+        },
+        bodyFont: {
+          size: 12,
+        },
+        padding: 12,
+        cornerRadius: 8,
+        borderColor: 'rgba(229, 231, 235, 1)',
+        borderWidth: 1,
+        caretSize: 6,
+        boxPadding: 3,
+        mode: 'index',
+        intersect: false,
+        displayColors: true,
+        // Fix for persistent tooltip
+        callbacks: {
+          label: function(context: any) {
+            let label = context.dataset.label || '';
+            if (label) {
+              label += ': ';
+            }
+            if (context.datasetIndex === 2) { // Volume
+              label += context.parsed.y;
+            } else {
+              label += new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'EUR',
+                minimumFractionDigits: 2,
+              }).format(context.parsed.y);
+            }
+            return label;
+          }
+        }
+      },
     },
-    responsiveAnimationDuration: 0, // Disable animation on resize
     scales: {
       x: {
         grid: {
           display: false,
         },
         ticks: {
+          maxRotation: 0,
+          autoSkip: true,
           maxTicksLimit: 8,
-          padding: 10, // Add padding between labels and axis
-          font: {
-            size: 10, // Smaller font size for x-axis labels
-          },
-          callback: (value: any, index: number) => {
-            // Show fewer ticks for readability
-            const date = new Date(filteredData[index]?.date);
-            if (timeframe === '1w') {
-              return date.toLocaleDateString(undefined, { weekday: 'short' });
-            } else {
-              return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
-            }
-          },
+          padding: 10, // Increase padding to prevent date cutoff
+          color: '#6b7280',
         },
-        afterFit: (axis: any) => {
-          // Increase bottom margin to ensure dates are not cut off
-          axis.paddingBottom = 15;
-        },
+        border: {
+          display: false,
+        }
       },
-      value: {
-        type: 'linear' as const,
-        position: 'left' as const,
-        grid: {
-          color: 'rgba(209, 213, 219, 0.2)',
-        },
-        ticks: {
-          callback: (value: any) => formatCurrency(value),
-        },
+      y: {
+        position: 'left',
         title: {
           display: true,
           text: 'Price (€)',
-        },
-      },
-      ...(showVolume ? {
-        volume: {
-          type: 'linear' as const,
-          position: 'right' as const,
-          grid: {
-            display: false,
+          color: '#6b7280',
+          font: {
+            size: 12,
+            weight: 'normal',
           },
-          ticks: {
-            callback: (value: any) => {
-              if (value >= 1000) return (value / 1000).toFixed(0) + 'k';
-              return value;
+          padding: { top: 0, bottom: 10 },
+        },
+        ticks: {
+          precision: 0,
+          padding: 8,
+          color: '#6b7280',
+          callback: function(value: any) {
+            return '€' + value;
+          }
+        },
+        grid: {
+          color: 'rgba(243, 244, 246, 1)',
+        },
+        border: {
+          display: false,
+        }
+      },
+      yVolume: {
+        position: 'right',
+        title: {
+          display: true,
+          text: 'Volume',
+          color: '#6b7280',
+          font: {
+            size: 12,
+            weight: 'normal',
+          },
+          padding: { top: 0, bottom: 10 },
+        },
+        ticks: {
+          precision: 0,
+          padding: 8,
+          color: '#6b7280',
+        },
+        grid: {
+          drawOnChartArea: false,
+          color: 'rgba(243, 244, 246, 1)',
+        },
+        border: {
+          display: false,
+        }
+      }
+    },
+    layout: {
+      padding: {
+        left: 10,
+        right: 10,
+        top: 20,
+        bottom: 15 // Increased bottom padding to prevent date cutoff
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (!chartRef.current) return;
+    
+    const ctx = chartRef.current.getContext('2d');
+    if (!ctx) return;
+    
+    // Filter data based on timeframe
+    const filteredData = filterDataByTimeframe(data, timeframe);
+    
+    if (chart) {
+      chart.destroy();
+    }
+    
+    const newChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: filteredData.map(d => formatDate(d.date)),
+        datasets: [
+          {
+            type: 'line',
+            label: 'Fundamental Value (€)',
+            data: filteredData.map(d => d.fundamentalValue),
+            borderColor: 'rgba(59, 130, 246, 1)',
+            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+            borderWidth: 2,
+            tension: 0.3,
+            pointRadius: 0,
+            pointHoverRadius: 5,
+            pointHoverBackgroundColor: 'rgba(59, 130, 246, 1)',
+            pointHoverBorderColor: '#fff',
+            pointHoverBorderWidth: 2,
+            fill: false,
+            yAxisID: 'y',
+            z: 10,
+          },
+          {
+            type: 'line',
+            label: 'Token Market Price (€)',
+            data: filteredData.map(d => d.tokenPrice || d.marketValue),
+            borderColor: 'rgba(16, 185, 129, 1)',
+            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+            borderWidth: 2,
+            tension: 0.3,
+            pointRadius: 0,
+            pointHoverRadius: 5,
+            pointHoverBackgroundColor: 'rgba(16, 185, 129, 1)',
+            pointHoverBorderColor: '#fff',
+            pointHoverBorderWidth: 2,
+            fill: false,
+            yAxisID: 'y',
+            z: 20,
+          },
+          {
+            type: 'bar',
+            label: 'Trading Volume',
+            data: filteredData.map(d => d.volume),
+            backgroundColor: 'rgba(209, 213, 219, 0.5)',
+            borderColor: 'rgba(209, 213, 219, 0.8)',
+            borderWidth: 1,
+            borderRadius: 4,
+            barPercentage: 0.6,
+            yAxisID: 'yVolume',
+            order: 3,
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: {
+          intersect: false,
+          mode: 'index',
+        },
+        animation: {
+          duration: 1000, // Only animate on initial load
+          onComplete: function() {
+            // Store the animation so it won't re-trigger on hover
+            this.animationsComplete = true;
+          },
+          onProgress: function() {
+            // Skip animation if it's already been completed once
+            if (this.animationsComplete === true) {
+              this.animations.forEach(animation => {
+                animation.active = false;
+              });
+            }
+          }
+        },
+        plugins: {
+          legend: {
+            position: 'top',
+            align: 'start',
+            labels: {
+              boxWidth: 15,
+              usePointStyle: true,
+              pointStyle: 'circle',
+              padding: 20,
             },
           },
-          title: {
-            display: true,
-            text: 'Volume',
+          tooltip: {
+            enabled: true,
+            backgroundColor: 'rgba(255, 255, 255, 0.95)',
+            titleColor: '#1f2937',
+            bodyColor: '#4b5563',
+            titleFont: {
+              size: 13,
+              weight: 'bold',
+            },
+            bodyFont: {
+              size: 12,
+            },
+            padding: 12,
+            cornerRadius: 8,
+            borderColor: 'rgba(229, 231, 235, 1)',
+            borderWidth: 1,
+            caretSize: 6,
+            boxPadding: 3,
+            mode: 'index',
+            intersect: false,
+            displayColors: true,
+            // Fix for persistent tooltip
+            callbacks: {
+              label: function(context) {
+                let label = context.dataset.label || '';
+                if (label) {
+                  label += ': ';
+                }
+                if (context.datasetIndex === 2) { // Volume
+                  label += context.parsed.y;
+                } else {
+                  label += new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'EUR',
+                    minimumFractionDigits: 2,
+                  }).format(context.parsed.y);
+                }
+                return label;
+              }
+            }
           },
         },
-      } : {})
-    },
-    plugins: {
-      tooltip: {
-        enabled: false,
-        external: (context: any) => {
-          // Custom tooltip handler
-          const { chart, tooltip } = context;
-
-          if (tooltip.opacity === 0) {
-            setTooltip(prev => ({ ...prev, visible: false }));
-            return;
-          }
-
-          const dataIndex = tooltip.dataPoints[0].dataIndex;
-          if (dataIndex >= 0 && dataIndex < filteredData.length) {
-            const dataPoint = filteredData[dataIndex];
-            setTooltip({
-              date: dataPoint.date,
-              fundamentalValue: dataPoint.fundamentalValue,
-              marketValue: dataPoint.marketValue,
-              premium: dataPoint.premium,
-              visible: true,
-              x: tooltip.caretX,
-              y: tooltip.caretY
-            });
+        scales: {
+          x: {
+            grid: {
+              display: false,
+            },
+            ticks: {
+              maxRotation: 0,
+              autoSkip: true,
+              maxTicksLimit: 8,
+              padding: 10, // Increase padding to prevent date cutoff
+              color: '#6b7280',
+            },
+            border: {
+              display: false,
+            }
+          },
+          y: {
+            position: 'left',
+            title: {
+              display: true,
+              text: 'Price (€)',
+              color: '#6b7280',
+              font: {
+                size: 12,
+                weight: 'normal',
+              },
+              padding: { top: 0, bottom: 10 },
+            },
+            ticks: {
+              precision: 0,
+              padding: 8,
+              color: '#6b7280',
+              callback: function(value) {
+                return '€' + value;
+              }
+            },
+            grid: {
+              color: 'rgba(243, 244, 246, 1)',
+            },
+            border: {
+              display: false,
+            }
+          },
+          yVolume: {
+            position: 'right',
+            title: {
+              display: true,
+              text: 'Volume',
+              color: '#6b7280',
+              font: {
+                size: 12,
+                weight: 'normal',
+              },
+              padding: { top: 0, bottom: 10 },
+            },
+            ticks: {
+              precision: 0,
+              padding: 8,
+              color: '#6b7280',
+            },
+            grid: {
+              drawOnChartArea: false,
+              color: 'rgba(243, 244, 246, 1)',
+            },
+            border: {
+              display: false,
+            }
           }
         },
+        layout: {
+          padding: {
+            left: 10,
+            right: 10,
+            top: 20,
+            bottom: 15 // Increased bottom padding to prevent date cutoff
+          }
+        }
       },
-      legend: {
-        position: 'top' as const,
-        labels: {
-          boxWidth: 12,
-          padding: 15,
-        },
-      },
-    },
-  };
+    });
+    
+    setChart(newChart);
+    
+    return () => {
+      if (newChart) {
+        newChart.destroy();
+      }
+    };
+  }, [data, timeframe]);
 
   return (
     <div className="bg-white p-4 rounded-lg shadow relative" style={{ height: `${height}px` }}>
       {title && <h3 className="text-lg font-semibold mb-4">{title}</h3>}
       
-      <div className="relative h-full" ref={chartContainerRef}>
+      <div className="relative h-full">
         <ChartComponent 
-          type="line"
+          type="bar"
           data={chartData}
           options={chartOptions}
-          height={height - 60} // Increased padding for x-axis labels
+          height={height}
         />
         
         {/* Custom tooltip */}
@@ -293,7 +592,7 @@ export default function DualLayerChart({
       </div>
       
       {/* Legend explaining the significance */}
-      <div className="text-xs text-gray-500 mt-6">
+      <div className="mt-3 text-xs text-gray-500">
         <p>The chart shows both the property's fundamental value and the token's market trading price. A gap indicates market premium or discount to the property's Net Asset Value (NAV).</p>
       </div>
     </div>
