@@ -39,15 +39,15 @@ export default function MarketAnalysisPage() {
       <h1 className="text-2xl font-bold mb-6">Market Analysis</h1>
       
       <div className="mb-6 flex flex-col md:flex-row items-start md:items-center justify-between">
-        <div className="mb-4 md:mb-0">
-          <p className="text-gray-600 mb-1">
+        <div className="mb-4 md:mb-0 max-w-3xl">
+          <p className="text-gray-600 mb-1 text-sm md:text-base leading-snug">
             Compare property fundamental value with token market price for deeper insights
           </p>
           <h2 className="text-xl font-semibold">Advanced Analytics Dashboard</h2>
         </div>
         
         {/* Property selector */}
-        <div>
+        <div className="flex-shrink-0">
           <label htmlFor="propertySelect" className="block text-sm font-medium text-gray-700 mb-1">
             Select Property
           </label>
@@ -83,15 +83,15 @@ export default function MarketAnalysisPage() {
               <h2 className="text-xl font-semibold">{selectedProperty.name}</h2>
               <p className="text-gray-600">{selectedProperty.location}</p>
               <div className="flex flex-wrap mt-2">
-                <div className="mr-6">
+                <div className="mr-6 mb-2">
                   <span className="text-gray-500 text-sm">Property Value:</span>
                   <span className="ml-1 font-medium">{formatCurrency(selectedProperty.price)}</span>
                 </div>
-                <div className="mr-6">
+                <div className="mr-6 mb-2">
                   <span className="text-gray-500 text-sm">Token Price:</span>
                   <span className="ml-1 font-medium">{formatCurrency(selectedProperty.price / 1000)}</span>
                 </div>
-                <div className="mr-6">
+                <div className="mr-6 mb-2">
                   <span className="text-gray-500 text-sm">Annual Yield:</span>
                   <span className="ml-1 font-medium text-green-600">{selectedProperty.yield}%</span>
                 </div>
@@ -102,7 +102,7 @@ export default function MarketAnalysisPage() {
       )}
       
       {/* Timeframe selector */}
-      <div className="mb-4 flex justify-end">
+      <div className="bg-white shadow rounded-lg p-4 mb-6">
         <div className="flex space-x-1 text-xs font-medium">
           {[
             { value: '1w', label: '1 Week' },
@@ -157,37 +157,42 @@ export default function MarketAnalysisPage() {
           
           {/* Premium/Discount to NAV explanation */}
           <div className="bg-white shadow rounded-lg p-6">
-            <h3 className="text-lg font-semibold mb-4">Understanding Property Token Premium/Discount</h3>
+            <h3 className="text-lg font-semibold mb-4">Understanding Price to NAV Ratio</h3>
+            <p className="text-gray-600 text-sm md:text-base mb-4 leading-relaxed">
+              The chart above tracks both the property's fundamental value and the token's market trading price.
+              When there's a gap between these lines, it indicates that the token is trading at either a premium or
+              discount to the property's Net Asset Value (NAV).
+            </p>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <h4 className="font-medium text-blue-800 mb-2">Why Tokens Trade at Different Values</h4>
-                <p className="text-gray-700 mb-4">
-                  Property tokens can trade at a premium or discount to their Net Asset Value (NAV) 
-                  for several reasons:
+              <div className="bg-blue-50 p-4 rounded-lg">
+                <h4 className="font-medium text-blue-800 mb-2">Premium/Discount Calculation</h4>
+                <p className="text-gray-700 text-sm leading-relaxed mb-3">
+                  <span className="font-medium">Premium to NAV:</span> Occurs when token price is 
+                  higher than the property's fundamental value per token. Calculated as:<br />
+                  <span className="font-mono text-xs bg-blue-100 px-1 rounded">
+                    ((Token Price / NAV per Token) - 1) × 100%
+                  </span>
                 </p>
-                <ul className="list-disc pl-5 space-y-2 text-gray-700">
-                  <li>Market sentiment and investor demand</li>
-                  <li>Liquidity differences between physical and tokenized real estate</li>
-                  <li>Future growth expectations not reflected in current valuations</li>
-                  <li>Access to fractional ownership benefits</li>
-                  <li>Transaction cost differences compared to traditional real estate</li>
-                </ul>
+                <p className="text-gray-700 text-sm leading-relaxed">
+                  <span className="font-medium">Discount to NAV:</span> Occurs when token price is 
+                  lower than the property's fundamental value per token. Shown as a negative premium.
+                </p>
               </div>
               
               <div>
                 <h4 className="font-medium text-blue-800 mb-2">What This Means For Investors</h4>
-                <p className="text-gray-700 mb-3">
+                <p className="text-gray-700 text-sm leading-relaxed mb-3">
                   <span className="font-medium">Premium to NAV:</span> Tokens trading above their 
                   fundamental value may indicate strong demand, market optimism about future growth, 
                   or scarcity of similar investment opportunities.
                 </p>
-                <p className="text-gray-700 mb-3">
+                <p className="text-gray-700 text-sm leading-relaxed mb-3">
                   <span className="font-medium">Discount to NAV:</span> Tokens trading below their
                   fundamental value might represent buying opportunities, but could also signal 
                   market concerns about the property or its management.
                 </p>
-                <p className="text-gray-700">
+                <p className="text-gray-700 text-sm leading-relaxed">
                   Savvy investors monitor the premium/discount to identify potential arbitrage 
                   opportunities or market inefficiencies in token pricing.
                 </p>

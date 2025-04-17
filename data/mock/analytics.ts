@@ -90,24 +90,25 @@ const calculateMetrics = (data: TokenValueDataPoint[]) => {
   const averagePremium = premiums.reduce((sum, premium) => sum + premium, 0) / premiums.length;
   
   // Correlation between fundamental and market values
-  const correlation = calculateCorrelation(fundamentalValues, marketValues);
+  const valueCorrelation = calculateCorrelation(fundamentalValues, marketValues);
   
   // YTD appreciation
-  const fundamentalAppreciation = ((fundamentalValues[fundamentalValues.length - 1] - fundamentalValues[0]) / fundamentalValues[0]) * 100;
-  const marketAppreciation = ((marketValues[marketValues.length - 1] - marketValues[0]) / marketValues[0]) * 100;
+  const propertyAppreciation = ((fundamentalValues[fundamentalValues.length - 1] - fundamentalValues[0]) / fundamentalValues[0]) * 100;
+  const tokenAppreciation = ((marketValues[marketValues.length - 1] - marketValues[0]) / marketValues[0]) * 100;
   
   // Sharpe ratio (assuming risk-free rate of 1%)
   const riskFreeRate = 0.01;
-  const annualizedReturn = marketAppreciation / 365 * data.length;
+  const annualizedReturn = tokenAppreciation / 365 * data.length;
   const sharpeRatio = (annualizedReturn - riskFreeRate) / (volatility / 100);
   
   return {
     volatility: parseFloat(volatility.toFixed(2)),
-    correlation: parseFloat(correlation.toFixed(2)),
+    valueCorrelation: parseFloat(valueCorrelation.toFixed(2)),
     averagePremium: parseFloat(averagePremium.toFixed(2)),
+    priceToNav: parseFloat((100 + averagePremium).toFixed(2)),
     sharpeRatio: parseFloat(sharpeRatio.toFixed(2)),
-    fundamentalAppreciation: parseFloat(fundamentalAppreciation.toFixed(2)),
-    marketAppreciation: parseFloat(marketAppreciation.toFixed(2))
+    propertyAppreciation: parseFloat(propertyAppreciation.toFixed(2)),
+    tokenAppreciation: parseFloat(tokenAppreciation.toFixed(2))
   };
 };
 
@@ -157,32 +158,32 @@ export const marketCorrelations: Record<string, MarketCorrelation[]> = {};
 properties.forEach(property => {
   marketCorrelations[property.id] = [
     {
-      timeframe: 'week',
-      realEstateIndex: parseFloat((0.3 + Math.random() * 0.4).toFixed(2)),
-      stockMarket: parseFloat((0.1 + Math.random() * 0.4).toFixed(2)),
-      cryptoMarket: parseFloat((0.2 + Math.random() * 0.6).toFixed(2)),
-      commodities: parseFloat((0 + Math.random() * 0.3).toFixed(2)),
+      market: 'Real Estate',
+      weekCorrelation: parseFloat((0.3 + Math.random() * 0.4).toFixed(2)),
+      monthCorrelation: parseFloat((0.4 + Math.random() * 0.4).toFixed(2)),
+      quarterCorrelation: parseFloat((0.5 + Math.random() * 0.3).toFixed(2)),
+      yearCorrelation: parseFloat((0.6 + Math.random() * 0.3).toFixed(2))
     },
     {
-      timeframe: 'month',
-      realEstateIndex: parseFloat((0.4 + Math.random() * 0.4).toFixed(2)),
-      stockMarket: parseFloat((0.2 + Math.random() * 0.4).toFixed(2)),
-      cryptoMarket: parseFloat((0.3 + Math.random() * 0.5).toFixed(2)),
-      commodities: parseFloat((0.1 + Math.random() * 0.3).toFixed(2)),
+      market: 'Stock Market',
+      weekCorrelation: parseFloat((0.1 + Math.random() * 0.4).toFixed(2)),
+      monthCorrelation: parseFloat((0.2 + Math.random() * 0.4).toFixed(2)),
+      quarterCorrelation: parseFloat((0.3 + Math.random() * 0.3).toFixed(2)),
+      yearCorrelation: parseFloat((0.4 + Math.random() * 0.3).toFixed(2))
     },
     {
-      timeframe: 'quarter',
-      realEstateIndex: parseFloat((0.5 + Math.random() * 0.3).toFixed(2)),
-      stockMarket: parseFloat((0.3 + Math.random() * 0.3).toFixed(2)),
-      cryptoMarket: parseFloat((0.2 + Math.random() * 0.4).toFixed(2)),
-      commodities: parseFloat((0.2 + Math.random() * 0.3).toFixed(2)),
+      market: 'Crypto Market',
+      weekCorrelation: parseFloat((0.2 + Math.random() * 0.6).toFixed(2)),
+      monthCorrelation: parseFloat((0.3 + Math.random() * 0.5).toFixed(2)),
+      quarterCorrelation: parseFloat((0.2 + Math.random() * 0.4).toFixed(2)),
+      yearCorrelation: parseFloat((0.1 + Math.random() * 0.3).toFixed(2))
     },
     {
-      timeframe: 'year',
-      realEstateIndex: parseFloat((0.6 + Math.random() * 0.3).toFixed(2)),
-      stockMarket: parseFloat((0.4 + Math.random() * 0.3).toFixed(2)),
-      cryptoMarket: parseFloat((0.1 + Math.random() * 0.3).toFixed(2)),
-      commodities: parseFloat((0.3 + Math.random() * 0.3).toFixed(2)),
+      market: 'Commodities',
+      weekCorrelation: parseFloat((0 + Math.random() * 0.3).toFixed(2)),
+      monthCorrelation: parseFloat((0.1 + Math.random() * 0.3).toFixed(2)),
+      quarterCorrelation: parseFloat((0.2 + Math.random() * 0.3).toFixed(2)),
+      yearCorrelation: parseFloat((0.3 + Math.random() * 0.3).toFixed(2))
     }
   ];
 });

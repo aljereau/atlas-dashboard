@@ -14,20 +14,21 @@ export interface PropertyValueHistory {
   data: TokenValueDataPoint[];
   metrics: {
     volatility: number;           // Standard deviation of returns
-    correlation: number;          // Correlation between fundamental and market values
-    averagePremium: number;       // Average price-to-NAV premium/discount
+    valueCorrelation: number;     // Correlation between fundamental and market values
+    averagePremium: number;       // Average premium/discount
+    priceToNav: number;           // Price to Net Asset Value ratio
     sharpeRatio: number;          // Risk-adjusted return metric
-    fundamentalAppreciation: number; // YTD % change in fundamental value
-    marketAppreciation: number;   // YTD % change in market value
+    propertyAppreciation: number; // YTD % change in property value
+    tokenAppreciation: number;    // YTD % change in token value
   };
 }
 
 export interface MarketCorrelation {
-  timeframe: 'week' | 'month' | 'quarter' | 'year';
-  realEstateIndex: number;  // Correlation with broad real estate market
-  stockMarket: number;      // Correlation with stock market
-  cryptoMarket: number;     // Correlation with crypto market
-  commodities: number;      // Correlation with commodities
+  market: string;                // Name of the market being compared
+  weekCorrelation: number;       // 1-week correlation coefficient
+  monthCorrelation: number;      // 1-month correlation coefficient
+  quarterCorrelation: number;    // 3-month correlation coefficient
+  yearCorrelation: number;       // 1-year correlation coefficient
 }
 
 export interface LiquidityMetrics {

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { TokenValueDataPoint } from '@/data/types/analytics';
 import ChartComponent from '@/components/ui/ChartComponent';
 
@@ -19,6 +19,7 @@ export default function DualLayerChart({
   height = 300,
   timeframe = 'all'
 }: DualLayerChartProps) {
+  const chartContainerRef = useRef<HTMLDivElement>(null);
   const [tooltip, setTooltip] = useState<{
     date: string;
     fundamentalValue: number;
@@ -37,12 +38,31 @@ export default function DualLayerChart({
     y: 0
   });
 
+  // Add event listener to hide tooltip when mouse leaves chart area
+  useEffect(() => {
+    const chartContainer = chartContainerRef.current;
+    
+    const handleMouseLeave = () => {
+      setTooltip(prev => ({ ...prev, visible: false }));
+    };
+    
+    if (chartContainer) {
+      chartContainer.addEventListener('mouseleave', handleMouseLeave);
+    }
+    
+    return () => {
+      if (chartContainer) {
+        chartContainer.removeEventListener('mouseleave', handleMouseLeave);
+      }
+    };
+  }, []);
+
   // Filter data based on timeframe
   const filteredData = (() => {
     if (timeframe === 'all') return data;
     
     const now = new Date();
-    let cutoffDate = new Date();
+    const cutoffDate = new Date();
     
     if (timeframe === '1w') cutoffDate.setDate(now.getDate() - 7);
     else if (timeframe === '1m') cutoffDate.setMonth(now.getMonth() - 1);
@@ -122,6 +142,13 @@ export default function DualLayerChart({
       mode: 'index' as const,
       intersect: false,
     },
+    animation: {
+      duration: 1000, // Initial animation duration in ms
+    },
+    hover: {
+      animationDuration: 0, // Disable animation on hover
+    },
+    responsiveAnimationDuration: 0, // Disable animation on resize
     scales: {
       x: {
         grid: {
@@ -129,6 +156,10 @@ export default function DualLayerChart({
         },
         ticks: {
           maxTicksLimit: 8,
+          padding: 10, // Add padding between labels and axis
+          font: {
+            size: 10, // Smaller font size for x-axis labels
+          },
           callback: (value: any, index: number) => {
             // Show fewer ticks for readability
             const date = new Date(filteredData[index]?.date);
@@ -138,6 +169,10 @@ export default function DualLayerChart({
               return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
             }
           },
+        },
+        afterFit: (axis: any) => {
+          // Increase bottom margin to ensure dates are not cut off
+          axis.paddingBottom = 15;
         },
       },
       value: {
@@ -215,12 +250,12 @@ export default function DualLayerChart({
     <div className="bg-white p-4 rounded-lg shadow relative" style={{ height: `${height}px` }}>
       {title && <h3 className="text-lg font-semibold mb-4">{title}</h3>}
       
-      <div className="relative h-full">
+      <div className="relative h-full" ref={chartContainerRef}>
         <ChartComponent 
           type="line"
           data={chartData}
           options={chartOptions}
-          height={height - 50} // Subtract padding and header
+          height={height - 60} // Increased padding for x-axis labels
         />
         
         {/* Custom tooltip */}
@@ -258,7 +293,7 @@ export default function DualLayerChart({
       </div>
       
       {/* Legend explaining the significance */}
-      <div className="mt-3 text-xs text-gray-500">
+      <div className="text-xs text-gray-500 mt-6">
         <p>The chart shows both the property's fundamental value and the token's market trading price. A gap indicates market premium or discount to the property's Net Asset Value (NAV).</p>
       </div>
     </div>

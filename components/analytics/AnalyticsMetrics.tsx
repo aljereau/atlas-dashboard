@@ -18,53 +18,60 @@ export default function AnalyticsMetrics({ propertyData, correlations }: Analyti
     return `${sign}${value.toFixed(2)}%`;
   };
   
-  // Get CSS color based on value
-  const getValueColor = (value: number) => {
-    return value > 0 ? 'text-green-600' : value < 0 ? 'text-red-600' : 'text-gray-600';
-  };
-  
-  // Get correlations for selected timeframe
-  const selectedCorrelation = correlations.find(c => c.timeframe === timeframe) || correlations[0];
-  
-  // Correlation chart data
+  // Prepare correlation data
   const correlationData = {
-    labels: ['Real Estate', 'Stock Market', 'Crypto Market', 'Commodities'],
+    labels: correlations.map(c => c.market),
     datasets: [
       {
-        label: `${timeframe.charAt(0).toUpperCase() + timeframe.slice(1)} Correlation`,
-        data: [
-          selectedCorrelation.realEstateIndex,
-          selectedCorrelation.stockMarket, 
-          selectedCorrelation.cryptoMarket,
-          selectedCorrelation.commodities
-        ],
-        backgroundColor: [
-          'rgba(34, 197, 94, 0.8)',  // Green
-          'rgba(59, 130, 246, 0.8)', // Blue
-          'rgba(249, 115, 22, 0.8)', // Orange
-          'rgba(168, 85, 247, 0.8)',  // Purple
-        ],
+        label: 'Correlation Coefficient',
+        data: correlations.map(c => {
+          const value = timeframe === 'week' ? c.weekCorrelation : 
+                       timeframe === 'month' ? c.monthCorrelation :
+                       timeframe === 'quarter' ? c.quarterCorrelation : c.yearCorrelation;
+          return parseFloat((value * 100).toFixed(1));
+        }),
+        backgroundColor: correlations.map(c => {
+          const value = timeframe === 'week' ? c.weekCorrelation : 
+                       timeframe === 'month' ? c.monthCorrelation :
+                       timeframe === 'quarter' ? c.quarterCorrelation : c.yearCorrelation;
+          
+          if (value >= 0.6) return 'rgba(16, 185, 129, 0.7)'; // Strong positive - Green
+          if (value >= 0.3) return 'rgba(59, 130, 246, 0.7)'; // Moderate positive - Blue
+          if (value >= -0.3) return 'rgba(249, 115, 22, 0.7)'; // Weak correlation - Orange
+          if (value >= -0.6) return 'rgba(239, 68, 68, 0.7)'; // Moderate negative - Red
+          return 'rgba(139, 0, 0, 0.7)'; // Strong negative - Dark red
+        }),
         borderWidth: 0,
-      },
-    ],
+        borderRadius: 4,
+      }
+    ]
   };
   
-  // Chart options
+  // Correlation chart options
   const correlationOptions = {
+    indexAxis: 'y' as const,
     responsive: true,
     maintainAspectRatio: false,
     scales: {
-      y: {
-        beginAtZero: true,
-        max: 1,
+      x: {
+        min: -100,
+        max: 100,
+        grid: {
+          color: 'rgba(209, 213, 219, 0.2)',
+        },
         ticks: {
-          callback: (value: any) => value.toFixed(1),
+          callback: (value: number) => `${value}%`,
         },
         title: {
           display: true,
-          text: 'Correlation Coefficient',
-        },
+          text: 'Correlation Strength',
+        }
       },
+      y: {
+        grid: {
+          display: false,
+        },
+      }
     },
     plugins: {
       legend: {
@@ -73,64 +80,70 @@ export default function AnalyticsMetrics({ propertyData, correlations }: Analyti
       tooltip: {
         callbacks: {
           label: (context: any) => {
-            return `Correlation: ${context.formattedValue}`;
+            const value = context.raw / 100;
+            let strength = '';
+            
+            if (Math.abs(value) < 0.3) strength = 'Weak';
+            else if (Math.abs(value) < 0.6) strength = 'Moderate';
+            else strength = 'Strong';
+            
+            const direction = value >= 0 ? 'positive' : 'negative';
+            return `${strength} ${direction} correlation: ${(value).toFixed(2)}`;
           }
         }
       }
-    },
+    }
   };
   
   return (
     <div className="bg-white rounded-lg shadow">
       <div className="px-4 py-5 border-b border-gray-200">
-        <h2 className="text-lg font-semibold">Advanced Analytics</h2>
+        <h2 className="text-lg font-semibold">Value Metrics</h2>
         <p className="text-sm text-gray-500 mt-1">
           Detailed metrics showing the relationship between property value and token price
         </p>
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6">
-        {/* Key metrics panel */}
-        <div>
-          <h3 className="text-md font-medium mb-4">Value Metrics</h3>
-          <div className="bg-gray-50 rounded-lg p-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <h4 className="text-sm text-gray-500">Volatility (Annual)</h4>
-                <p className="font-semibold">{propertyData.metrics.volatility}%</p>
-              </div>
-              <div>
-                <h4 className="text-sm text-gray-500">Price-to-NAV</h4>
-                <div className={`font-semibold ${getValueColor(propertyData.metrics.averagePremium)}`}>
-                  {formatPercentage(propertyData.metrics.averagePremium)}
-                </div>
-              </div>
-              <div>
-                <h4 className="text-sm text-gray-500">Value Correlation</h4>
-                <p className="font-semibold">{propertyData.metrics.correlation.toFixed(2)}</p>
-              </div>
-              <div>
-                <h4 className="text-sm text-gray-500">Sharpe Ratio</h4>
-                <p className="font-semibold">{propertyData.metrics.sharpeRatio.toFixed(2)}</p>
-              </div>
-              <div>
-                <h4 className="text-sm text-gray-500">Property Appreciation</h4>
-                <div className={`font-semibold ${getValueColor(propertyData.metrics.fundamentalAppreciation)}`}>
-                  {formatPercentage(propertyData.metrics.fundamentalAppreciation)}
-                </div>
-              </div>
-              <div>
-                <h4 className="text-sm text-gray-500">Token Appreciation</h4>
-                <div className={`font-semibold ${getValueColor(propertyData.metrics.marketAppreciation)}`}>
-                  {formatPercentage(propertyData.metrics.marketAppreciation)}
-                </div>
-              </div>
-            </div>
+      <div className="p-6">
+        {/* Metrics grid */}
+        <div className="grid grid-cols-2 gap-4 mb-6">
+          <div>
+            <p className="text-sm text-gray-500">Volatility (Annual)</p>
+            <p className="text-xl font-semibold">{propertyData.metrics.volatility.toFixed(2)}%</p>
           </div>
-          
+          <div>
+            <p className="text-sm text-gray-500">Price-to-NAV</p>
+            <p className="text-xl font-semibold">
+              {formatPercentage(propertyData.metrics.priceToNav)}
+            </p>
+          </div>
+          <div>
+            <p className="text-sm text-gray-500">Value Correlation</p>
+            <p className="text-xl font-semibold">{propertyData.metrics.valueCorrelation.toFixed(2)}</p>
+          </div>
+          <div>
+            <p className="text-sm text-gray-500">Sharpe Ratio</p>
+            <p className="text-xl font-semibold">{propertyData.metrics.sharpeRatio.toFixed(2)}</p>
+          </div>
+          <div>
+            <p className="text-sm text-gray-500">Property Appreciation</p>
+            <p className="text-xl font-semibold text-green-600">
+              {formatPercentage(propertyData.metrics.propertyAppreciation)}
+            </p>
+          </div>
+          <div>
+            <p className="text-sm text-gray-500">Token Appreciation</p>
+            <p className="text-xl font-semibold text-green-600">
+              {formatPercentage(propertyData.metrics.tokenAppreciation)}
+            </p>
+          </div>
+        </div>
+        
+        {/* Market insight panel */}
+        <div>
           <h3 className="text-md font-medium mt-6 mb-4">Market Insight</h3>
           <div className="bg-gray-50 rounded-lg p-4">
-            <p className="text-sm mb-4">
+            <p className="text-sm mb-4 leading-relaxed">
               {propertyData.metrics.averagePremium > 5 
                 ? `This property token is trading at a significant premium to its underlying value, indicating strong market demand or potential speculation.`
                 : propertyData.metrics.averagePremium < -5
@@ -139,7 +152,7 @@ export default function AnalyticsMetrics({ propertyData, correlations }: Analyti
               }
             </p>
             
-            <p className="text-sm">
+            <p className="text-sm leading-relaxed">
               {propertyData.metrics.volatility > 15
                 ? `With high volatility (${propertyData.metrics.volatility}%), this token experiences larger price swings than the underlying property market.`
                 : propertyData.metrics.volatility < 8
@@ -151,7 +164,7 @@ export default function AnalyticsMetrics({ propertyData, correlations }: Analyti
         </div>
         
         {/* Correlation panel */}
-        <div>
+        <div className="mt-6">
           <div className="flex justify-between items-center mb-4">
             <h3 className="text-md font-medium">Market Correlations</h3>
             <div className="flex space-x-1 text-xs">
@@ -180,32 +193,11 @@ export default function AnalyticsMetrics({ propertyData, correlations }: Analyti
             />
           </div>
           
-          <div className="bg-gray-50 rounded-lg p-4">
-            <h4 className="text-sm font-medium mb-2">Correlation Insight</h4>
-            <p className="text-sm">
-              {selectedCorrelation.realEstateIndex > 0.7
-                ? "This token strongly follows traditional real estate market trends."
-                : selectedCorrelation.cryptoMarket > 0.6
-                ? "This token shows significant correlation with crypto markets, suggesting it may be influenced by broader digital asset trends rather than just property fundamentals."
-                : selectedCorrelation.stockMarket > 0.5
-                ? "This token has moderate correlation with stock markets, suggesting some influence from broader economic trends."
-                : "This token shows low correlation with traditional markets, potentially offering unique diversification benefits."
-              }
-            </p>
-          </div>
-        </div>
-      </div>
-      
-      <div className="px-6 pb-6">
-        <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
-          <h3 className="text-sm font-medium text-blue-800 mb-2">Understanding the Metrics</h3>
-          <ul className="text-xs text-blue-700 space-y-1">
-            <li><span className="font-semibold">Price-to-NAV:</span> Shows whether token is trading at premium/discount to property value</li>
-            <li><span className="font-semibold">Volatility:</span> Measures price fluctuation intensity (annualized)</li>
-            <li><span className="font-semibold">Value Correlation:</span> How closely token price follows property value (1.0 = perfect)</li>
-            <li><span className="font-semibold">Sharpe Ratio:</span> Risk-adjusted return (higher is better)</li>
-            <li><span className="font-semibold">Market Correlations:</span> How token price moves with different asset classes</li>
-          </ul>
+          <p className="text-xs text-gray-500 mt-2">
+            Correlation measures how this token's price moves in relation to other markets.
+            Values close to 100% indicate strong positive correlation, while negative values
+            show inverse relationships.
+          </p>
         </div>
       </div>
     </div>
