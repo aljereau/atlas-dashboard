@@ -4,6 +4,15 @@ import { useState, useEffect, useRef } from 'react';
 import { TokenValueDataPoint } from '@/data/types/analytics';
 import ChartComponent from '@/components/ui/ChartComponent';
 import Chart from 'chart.js/auto';
+import { ChartTypeRegistry } from 'chart.js';
+
+// Extend the Chart type to include our custom properties
+declare module 'chart.js' {
+  interface Chart {
+    animationsComplete?: boolean;
+    animations?: { active: boolean }[];
+  }
+}
 
 interface DualLayerChartProps {
   data: TokenValueDataPoint[];
@@ -112,7 +121,7 @@ export default function DualLayerChart({
     labels: filteredData.map(d => formatDate(d.date)),
     datasets: [
       {
-        type: 'line',
+        type: 'line' as const,
         label: 'Fundamental Value (€)',
         data: filteredData.map(d => d.fundamentalValue),
         borderColor: 'rgba(59, 130, 246, 1)',
@@ -126,12 +135,12 @@ export default function DualLayerChart({
         pointHoverBorderWidth: 2,
         fill: false,
         yAxisID: 'y',
-        z: 10,
+        order: 1, // Use order instead of z
       },
       {
-        type: 'line',
+        type: 'line' as const,
         label: 'Token Market Price (€)',
-        data: filteredData.map(d => d.tokenPrice || d.marketValue),
+        data: filteredData.map(d => d.marketValue), // Use marketValue instead of tokenPrice
         borderColor: 'rgba(16, 185, 129, 1)',
         backgroundColor: 'rgba(16, 185, 129, 0.1)',
         borderWidth: 2,
@@ -143,10 +152,10 @@ export default function DualLayerChart({
         pointHoverBorderWidth: 2,
         fill: false,
         yAxisID: 'y',
-        z: 20,
+        order: 2, // Use order instead of z
       },
       {
-        type: 'bar',
+        type: 'bar' as const,
         label: 'Trading Volume',
         data: filteredData.map(d => d.volume),
         backgroundColor: 'rgba(209, 213, 219, 0.5)',
@@ -166,18 +175,18 @@ export default function DualLayerChart({
     maintainAspectRatio: false,
     interaction: {
       intersect: false,
-      mode: 'index',
+      mode: 'index' as const,
     },
     animation: {
       duration: 1000, // Only animate on initial load
-      onComplete: function(this: any) {
+      onComplete: function(this: Chart) {
         // Store the animation so it won't re-trigger on hover
         this.animationsComplete = true;
       },
-      onProgress: function(this: any) {
+      onProgress: function(this: Chart) {
         // Skip animation if it's already been completed once
-        if (this.animationsComplete === true) {
-          this.animations.forEach((animation: any) => {
+        if (this.animationsComplete === true && this.animations) {
+          this.animations.forEach((animation: { active: boolean }) => {
             animation.active = false;
           });
         }
@@ -185,12 +194,12 @@ export default function DualLayerChart({
     },
     plugins: {
       legend: {
-        position: 'top',
-        align: 'start',
+        position: 'top' as const,
+        align: 'start' as const,
         labels: {
           boxWidth: 15,
           usePointStyle: true,
-          pointStyle: 'circle',
+          pointStyle: 'circle' as const,
           padding: 20,
         },
       },
@@ -212,7 +221,7 @@ export default function DualLayerChart({
         borderWidth: 1,
         caretSize: 6,
         boxPadding: 3,
-        mode: 'index',
+        mode: 'index' as const,
         intersect: false,
         displayColors: true,
         // Fix for persistent tooltip
@@ -253,7 +262,7 @@ export default function DualLayerChart({
         }
       },
       y: {
-        position: 'left',
+        position: 'left' as const,
         title: {
           display: true,
           text: 'Price (€)',
@@ -280,7 +289,7 @@ export default function DualLayerChart({
         }
       },
       yVolume: {
-        position: 'right',
+        position: 'right' as const,
         title: {
           display: true,
           text: 'Volume',
@@ -348,12 +357,12 @@ export default function DualLayerChart({
             pointHoverBorderWidth: 2,
             fill: false,
             yAxisID: 'y',
-            z: 10,
+            order: 1, // Use order instead of z
           },
           {
             type: 'line',
             label: 'Token Market Price (€)',
-            data: filteredData.map(d => d.tokenPrice || d.marketValue),
+            data: filteredData.map(d => d.marketValue), // Use marketValue instead of tokenPrice
             borderColor: 'rgba(16, 185, 129, 1)',
             backgroundColor: 'rgba(16, 185, 129, 0.1)',
             borderWidth: 2,
@@ -365,7 +374,7 @@ export default function DualLayerChart({
             pointHoverBorderWidth: 2,
             fill: false,
             yAxisID: 'y',
-            z: 20,
+            order: 2, // Use order instead of z
           },
           {
             type: 'bar',
@@ -390,14 +399,14 @@ export default function DualLayerChart({
         },
         animation: {
           duration: 1000, // Only animate on initial load
-          onComplete: function() {
+          onComplete: function(this: Chart) {
             // Store the animation so it won't re-trigger on hover
             this.animationsComplete = true;
           },
-          onProgress: function() {
+          onProgress: function(this: Chart) {
             // Skip animation if it's already been completed once
-            if (this.animationsComplete === true) {
-              this.animations.forEach(animation => {
+            if (this.animationsComplete === true && this.animations) {
+              this.animations.forEach((animation: { active: boolean }) => {
                 animation.active = false;
               });
             }
@@ -437,7 +446,7 @@ export default function DualLayerChart({
             displayColors: true,
             // Fix for persistent tooltip
             callbacks: {
-              label: function(context) {
+              label: function(context: any) {
                 let label = context.dataset.label || '';
                 if (label) {
                   label += ': ';
